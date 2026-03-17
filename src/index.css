@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+    /* Brand Palette - Premium & Modern */
+    --color-brand-white: #FFFFFF;
+    --color-brand-offwhite: #F4F8FA;
+    --color-brand-gray-light: #E0EBF1;
+    /* Backgrounds */
+    --color-brand-gray-medium: #8BA8B6;
+    /* Muted text */
+    --color-brand-gray-dark: #12212E;
+    /* Primary text (Darker for contrast) */
+    --color-brand-blue-muted: #6BE1E3;
+    /* Soft Aqua/Cyan */
+    --color-brand-blue-primary: #116EA2;
+    /* Medium/Primary Blue */
+    --color-brand-blue-dark: #0A3A78;
+    /* Dark Navy */
+    --color-brand-accent: #1CBDDE;
+    /* Bright Cyan Accent for contrast */
+
+    /* Shadows - Soft & Premium */
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 20px 35px -8px rgba(0, 0, 0, 0.07), 0 12px 14px -10px rgba(0, 0, 0, 0.07);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+    /* Border Radius - Modern Rounded */
+    --radius-premium: 24px;
+    --radius-card: 16px;
+    --radius-button: 12px;
+
+    /* Spacing Scale */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+}
+
+/* Force Light background */
+body {
+    background-color: var(--color-brand-white);
+    color: var(--color-brand-gray-dark);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-brand-gray-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-brand-gray-medium);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-gray-dark);
+}

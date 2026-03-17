@@ -1,0 +1,335 @@
+import React, { useState, useEffect } from 'react';
+import Footer from '../../components/common/Footer';
+import Button from '../../components/common/Button';
+import { Link, useNavigate } from 'react-router-dom';
+
+const PROPERTY_TYPES = ['Any Type', 'Apartment', 'House', 'Villa', 'Studio', 'Office', 'Shop'];
+const PRICE_RANGES = [
+    { label: 'Any Price', value: '' },
+    { label: 'Under ₹5,000', value: '5000' },
+    { label: 'Under ₹10,000', value: '10000' },
+    { label: 'Under ₹25,000', value: '25000' },
+    { label: 'Under ₹50,000', value: '50000' },
+    { label: 'Under ₹1,00,000', value: '100000' },
+];
+
+const HeroSearchBar = () => {
+    const navigate = useNavigate();
+    const [aiMode, setAiMode] = useState(false);
+    const [location, setLocation] = useState('');
+    const [propertyType, setPropertyType] = useState('Any Type');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [aiQuery, setAiQuery] = useState('');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (aiMode) {
+            if (!aiQuery.trim()) return;
+            navigate(`/listings?ai=true&query=${encodeURIComponent(aiQuery.trim())}`);
+        } else {
+            const params = new URLSearchParams();
+            if (location.trim()) params.set('city', location.trim());
+            if (propertyType !== 'Any Type') params.set('property_type', propertyType.toLowerCase());
+            if (maxPrice) params.set('max_price', maxPrice);
+            navigate(`/listings?${params.toString()}`);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSearch} className="w-full max-w-5xl mx-auto mt-12 mb-8">
+            {/* AI Toggle */}
+            <div className="flex justify-end mb-3">
+                <button
+                    type="button"
+                    onClick={() => setAiMode(m => !m)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 border ${aiMode
+                        ? 'bg-brand-accent text-brand-blue-primary border-brand-accent shadow-lg shadow-brand-accent/30'
+                        : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                        }`}
+                >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI Search {aiMode ? 'On' : 'Off'}
+                </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full p-2.5 flex flex-col md:flex-row gap-3 shadow-2xl items-center w-full">
+                {aiMode ? (
+                    <div className="flex-1 flex items-center gap-3 bg-white/10 rounded-[20px] px-5 py-3">
+                        <svg className="w-4 h-4 text-brand-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <input
+                            type="text"
+                            value={aiQuery}
+                            onChange={e => setAiQuery(e.target.value)}
+                            placeholder="e.g. 2BHK apartment in Mumbai under ₹20,000..."
+                            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/50 text-sm font-medium"
+                        />
+                    </div>
+                ) : (
+                    <>
+                        {/* Location */}
+                        <div className="flex-1 flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 min-w-[200px]">
+                            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <input
+                                type="text"
+                                value={location}
+                                onChange={e => setLocation(e.target.value)}
+                                placeholder="City or area..."
+                                className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/60 text-base font-semibold"
+                            />
+                        </div>
+
+                        {/* Divider */}
+                        <div className="hidden md:block w-px h-8 bg-white/20 self-center mx-2" />
+
+                        {/* Property Type */}
+                        <div className="flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 whitespace-nowrap">
+                            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <select
+                                value={propertyType}
+                                onChange={e => setPropertyType(e.target.value)}
+                                className="bg-transparent border-none outline-none text-white text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-8"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
+                            >
+                                {PROPERTY_TYPES.map(t => <option key={t}>{t}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="hidden md:block w-px h-8 bg-white/20 self-center mx-2" />
+
+                        {/* Max Price */}
+                        <div className="flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 whitespace-nowrap">
+                            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <select
+                                value={maxPrice}
+                                onChange={e => setMaxPrice(e.target.value)}
+                                className="bg-transparent border-none outline-none text-white text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-8"
+                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
+                            >
+                                {PRICE_RANGES.map(p => <option key={p.label} value={p.value}>{p.label}</option>)}
+                            </select>
+                        </div>
+                    </>
+                )}
+
+                {/* Search Button */}
+                <button
+                    type="submit"
+                    className={`shrink-0 px-8 py-3.5 rounded-full font-black text-base tracking-wide transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-lg whitespace-nowrap w-full md:w-auto ml-0 md:ml-auto ${aiMode
+                        ? 'bg-brand-accent text-brand-blue-primary shadow-brand-accent/30'
+                        : 'bg-brand-blue-primary text-white shadow-brand-blue-primary/40'
+                        }`}
+                >
+                    <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    {aiMode ? 'Ask AI ✨' : 'Search Now'}
+                </button>
+            </div>
+
+            {aiMode && (
+                <p className="text-center text-white/50 text-xs font-medium mt-3">
+                    Describe your ideal property in natural language — our AI will find the best matches
+                </p>
+            )}
+        </form>
+    );
+};
+
+const Home = () => {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
+    });
+
+    useEffect(() => {
+        const handleAuthChange = () => {
+            try { setUser(JSON.parse(localStorage.getItem('user'))); } catch { setUser(null); }
+        };
+        window.addEventListener('auth-change', handleAuthChange);
+        window.addEventListener('storage', handleAuthChange);
+        return () => {
+            window.removeEventListener('auth-change', handleAuthChange);
+            window.removeEventListener('storage', handleAuthChange);
+        };
+    }, []);
+
+    const steps = [
+        {
+            id: '01',
+            title: 'Browse Listings',
+            description: 'Explore our vast collection of verified premium properties customized to your location and style.',
+            icon: (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            )
+        },
+        {
+            id: '02',
+            title: 'Select & Review',
+            description: 'Filter based on price, property type, and review detailed descriptions, photos, and ratings.',
+            icon: (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+            )
+        },
+        {
+            id: '03',
+            title: 'Contact Lister',
+            description: 'Connect directly with verified property listers via our instant messaging platform to arrange details.',
+            icon: (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+            )
+        },
+        {
+            id: '04',
+            title: 'Move In',
+            description: 'Finalize your booking smoothly and prepare to move into your new perfect space without hassle.',
+            icon: (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            )
+        }
+    ];
+
+    return (
+        <div className="min-h-screen bg-white text-brand-gray-dark selection:bg-brand-blue-muted/30 font-sans">
+            
+            {/* 1. Landing Screen & Welcome Note */}
+            <section className="relative pt-24 pb-16 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden animate-fade-in">
+                <div className="relative z-10 bg-brand-gray-light rounded-[40px] overflow-hidden min-h-[80vh] flex flex-col items-center justify-center text-center p-8 sm:p-16 shadow-2xl">
+                    <div className="absolute inset-0 z-0 group">
+                        <img
+                            src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"
+                            className="w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105"
+                            alt="Luxury Background"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+                    </div>
+
+                    <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-4 md:px-10">
+                        <div className="inline-flex py-1.5 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-8">
+                            Welcome to Ez-Stay
+                        </div>
+                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-tight text-white drop-shadow-md mb-6 w-full whitespace-normal">
+                            Find Your Next{' '}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-brand-blue-primary whitespace-nowrap">
+                                Perfect Space
+                            </span>
+                        </h1>
+                        <p className="text-base sm:text-lg lg:text-xl text-gray-200 font-medium leading-relaxed max-w-3xl mx-auto mb-2 w-full">
+                            Search by location, type, and budget — or let our AI find the perfect property for you.
+                        </p>
+
+                        {/* Hero Search Bar */}
+                        <HeroSearchBar />
+                    </div>
+                </div>
+            </section>
+
+
+            {/* 2. Brief about the Site Moto / Theme */}
+            <section className="py-20 px-6 lg:px-12 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div className="space-y-8 relative">
+                        {/* Decorative Element */}
+                        <div className="absolute -left-6 -top-6 w-24 h-24 bg-brand-blue-primary/10 rounded-full blur-2xl"></div>
+
+                        <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-brand-gray-dark leading-tight relative z-10">
+                            Modern Living, <br />
+                            <span className="text-brand-blue-primary">Simplified.</span>
+                        </h2>
+                        <p className="text-lg text-brand-gray-medium leading-relaxed font-medium">
+                            Our motto is simple: <strong className="text-brand-gray-dark">Seamless housing for everyone.</strong> We believe that finding a new home shouldn't be a tedious chore filled with paperwork and endless scrolling.
+                        </p>
+                        <p className="text-lg text-brand-gray-medium leading-relaxed font-medium">
+                            We've curated an ecosystem driven by transparency, intelligent design, and a dedication to quality. From vibrant city apartments to tranquil suburban villas, our theme is bringing you spaces that inspire your best life.
+                        </p>
+                        <div className="pt-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-16 h-1 bg-brand-blue-primary rounded-full"></div>
+                                <span className="font-bold text-sm tracking-widest uppercase text-brand-gray-dark">Our Vision</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="relative h-[500px] rounded-[40px] overflow-hidden shadow-2xl group">
+                        <img
+                            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                            alt="Modern Living"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-brand-gray-dark/80 to-transparent flex items-end p-10">
+                            <h3 className="text-white text-2xl font-bold">Experience the Future of Real Estate</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 3. Step Guide on How to Book Listings */}
+            <section className="py-24 px-6 lg:px-12 max-w-7xl mx-auto bg-brand-offwhite rounded-[40px] my-12">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="text-4xl sm:text-5xl font-black tracking-tight mb-6">How To Book <span className="text-brand-blue-primary">Listings</span></h2>
+                    <p className="text-lg text-brand-gray-medium font-medium">We've streamlined the entire rental process into four easy steps. Your dream home is just a few clicks away.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {steps.map((step, index) => (
+                        <div key={index} className="bg-white rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-brand-gray-light group relative overflow-hidden flex flex-col">
+                            {/* Step Number Watermark */}
+                            <div className="absolute -right-4 -top-8 text-9xl font-black text-brand-offwhite group-hover:text-brand-blue-primary/5 transition-colors duration-300 pointer-events-none select-none">
+                                {step.id}
+                            </div>
+
+                            <div className="w-16 h-16 rounded-2xl bg-brand-blue-primary/10 text-brand-blue-primary flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-brand-blue-primary group-hover:text-white transition-all duration-300 relative z-10">
+                                {step.icon}
+                            </div>
+
+                            <h3 className="text-2xl font-bold mb-4 text-brand-gray-dark relative z-10">{step.title}</h3>
+                            <p className="text-brand-gray-medium leading-relaxed font-medium relative z-10 flex-grow">
+                                {step.description}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* 4. Bottom Call to Action / Get Started Redirection */}
+            <section className="py-20 px-6 lg:px-12 max-w-7xl mx-auto mb-10">
+                <div className="bg-brand-blue-primary rounded-[40px] p-12 lg:p-20 relative overflow-hidden flex flex-col items-center text-center shadow-2xl">
+                    <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 blur-[80px] pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-1/2 h-full bg-black/10 blur-[80px] pointer-events-none" />
+
+                    <div className="relative z-10 max-w-3xl">
+                        <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight mb-8">
+                            Ready to unlock your <br /> new front door?
+                        </h2>
+                        <p className="text-blue-100 text-xl font-medium mb-10">
+                            Join thousands of users who have found their perfect place. Start browsing our curated premium listings today.
+                        </p>
+                        <Button
+                            variant="accent"
+                            className="py-5 px-12 text-xl font-black tracking-tight shadow-xl hover:-translate-y-2 bg-white text-brand-blue-primary hover:bg-brand-offwhite rounded-full transition-all duration-300"
+                            onClick={() => navigate('/listings')}
+                        >
+                            Start Browsing Now
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. Footer */}
+            <Footer />
+        </div>
+    );
+};
+
+export default Home;
