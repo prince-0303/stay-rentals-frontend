@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { usePushNotifications } from './hooks/usePushNotifications';
+import { AuthProvider } from './contexts/AuthContext';
 
 import Navbar from './components/common/Navbar';
 
@@ -98,9 +99,11 @@ function App() {
   usePushNotifications();
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Router>
-        <AppContent />
-      </Router>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
     </GoogleOAuthProvider>
   );
 }

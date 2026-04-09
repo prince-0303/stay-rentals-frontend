@@ -1,18 +1,17 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * ProtectedRoute — any authenticated user can pass.
  * Reads the cached user from localStorage (set by authService on login).
  */
 export const ProtectedRoute = ({ children }) => {
-    const user = (() => {
-        try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-    })();
+    const { user, isAuthenticated } = useAuth();
 
     const location = useLocation();
 
-    if (!user || !localStorage.getItem('access_token')) {
+    if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
@@ -24,13 +23,11 @@ export const ProtectedRoute = ({ children }) => {
  * Authenticated non-listers are redirected to /listings.
  */
 export const ListerRoute = ({ children }) => {
-    const user = (() => {
-        try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-    })();
+    const { user, isAuthenticated } = useAuth();
 
     const location = useLocation();
 
-    if (!user || !localStorage.getItem('access_token')) {
+    if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
@@ -47,13 +44,11 @@ export const ListerRoute = ({ children }) => {
  * If a 'lister' tries to pass, they are redirected to /lister/dashboard.
  */
 export const ConsumerRoute = ({ children }) => {
-    const user = (() => {
-        try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
-    })();
+    const { user, isAuthenticated } = useAuth();
 
     const location = useLocation();
 
-    if (!user || !localStorage.getItem('access_token')) {
+    if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 

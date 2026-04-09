@@ -12,6 +12,7 @@ const setAuthUser = (userData, access, refresh) => {
 export const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login/', { email, password });
+        console.log('[login] Backend response.data:', response.data);
 
         if (response.data.user) {
             // Block admin from logging into the main app frontend
@@ -20,7 +21,9 @@ export const login = async (email, password) => {
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user, response.data.access, response.data.refresh);
+            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token;
+            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token;
+            setAuthUser(response.data.user, access, refresh);
         }
 
         return response.data;
@@ -95,7 +98,9 @@ export const googleAuth = async (code) => {
                 localStorage.removeItem('user');
                 throw { error: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user, response.data.access, response.data.refresh);
+            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token;
+            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token;
+            setAuthUser(response.data.user, access, refresh);
         }
 
         return response.data;
@@ -167,17 +172,19 @@ export const logout = async () => {
 
 export const getProfile = async () => {
     try {
+        console.log('Token in Storage:', localStorage.getItem('access_token'));
         const response = await api.get('/auth/profile/');
         // Keep localStorage in sync with latest profile from server
-        if (response.data) {
-            if (response.data.role === 'admin') {
+        const userData = response.data?.user || response.data;
+        if (userData) {
+            if (userData.role === 'admin') {
                 // If an admin somehow loads this page, kick them back to login page
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal.' };
             }
-            setAuthUser(response.data);
+            setAuthUser(userData, response.data?.access, response.data?.refresh);
         }
-        return response.data;
+        return userData;
     } catch (error) {
         if (error.response) throw error.response.data;
         else throw { detail: 'Failed to fetch profile' };
@@ -294,7 +301,9 @@ export const verifyMfaLogin = async (mfa_session_token, code) => {
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user, response.data.access, response.data.refresh);
+            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token;
+            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token;
+            setAuthUser(response.data.user, access, refresh);
         }
 
         return response.data;
