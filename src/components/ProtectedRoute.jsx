@@ -12,7 +12,7 @@ export const ProtectedRoute = ({ children }) => {
 
     const location = useLocation();
 
-    if (!user) {
+    if (!user || !localStorage.getItem('access_token')) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
@@ -30,7 +30,7 @@ export const ListerRoute = ({ children }) => {
 
     const location = useLocation();
 
-    if (!user) {
+    if (!user || !localStorage.getItem('access_token')) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
@@ -53,7 +53,7 @@ export const ConsumerRoute = ({ children }) => {
 
     const location = useLocation();
 
-    if (!user) {
+    if (!user || !localStorage.getItem('access_token')) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 

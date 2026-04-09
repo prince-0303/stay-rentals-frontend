@@ -1,8 +1,10 @@
 import api from './api';
 
 // Helper: persist user AND notify same-tab listeners (e.g. ChatWidget)
-const setAuthUser = (userData) => {
+const setAuthUser = (userData, access, refresh) => {
     localStorage.setItem('user', JSON.stringify(userData));
+    if (access) localStorage.setItem('access_token', access);
+    if (refresh) localStorage.setItem('refresh_token', refresh);
     window.dispatchEvent(new Event('auth-change'));
 };
 
@@ -18,7 +20,7 @@ export const login = async (email, password) => {
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user);
+            setAuthUser(response.data.user, response.data.access, response.data.refresh);
         }
 
         return response.data;
@@ -28,7 +30,7 @@ export const login = async (email, password) => {
             // If the backend returns user data even on error (e.g. 403 KYC required),
             // persist it so ProtectedRoute/KYC pages can function.
             if (error.response.data && error.response.data.user) {
-                setAuthUser(error.response.data.user);
+                setAuthUser(error.response.data.user, error.response.data.access, error.response.data.refresh);
             }
             throw error.response.data;
         } else if (error.request) {
@@ -93,7 +95,7 @@ export const googleAuth = async (code) => {
                 localStorage.removeItem('user');
                 throw { error: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user);
+            setAuthUser(response.data.user, response.data.access, response.data.refresh);
         }
 
         return response.data;
@@ -154,6 +156,8 @@ export const logout = async () => {
         console.error('⚠️ Logout error (continuing):', error);
     } finally {
         localStorage.removeItem('user');
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         localStorage.removeItem('compare_list');
         window.dispatchEvent(new Event('auth-change'));
         window.location.href = '/login';
@@ -290,7 +294,7 @@ export const verifyMfaLogin = async (mfa_session_token, code) => {
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            setAuthUser(response.data.user);
+            setAuthUser(response.data.user, response.data.access, response.data.refresh);
         }
 
         return response.data;
