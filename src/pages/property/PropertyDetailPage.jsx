@@ -159,10 +159,16 @@ const PropertyDetailPage = () => {
 
     const handlePayAdvance = async () => {
         try {
+            const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+            if (!razorpayKey) {
+                alert('Razorpay key is not configured.');
+                return;
+            }
+
             const orderData = await api.post(`/payments/create-order/${property.id}/`).then(r => r.data);
 
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                key: razorpayKey,
                 amount: orderData.amount,
                 currency: orderData.currency,
                 name: 'Ez-Stay',
@@ -181,8 +187,8 @@ const PropertyDetailPage = () => {
                     }
                 },
                 prefill: {
-                    name: orderData.user_name,
-                    email: orderData.user_email,
+                    name: orderData.user_name || user?.first_name || 'Resident',
+                    email: orderData.user_email || user?.email || 'user@example.com',
                 },
                 theme: { color: '#1E40AF' },
             };

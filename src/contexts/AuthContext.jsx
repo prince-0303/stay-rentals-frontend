@@ -12,14 +12,17 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('access_token');
             const storedUser = localStorage.getItem('user');
 
-            if (token && storedUser) {
-                try {
-                    const parsedUser = JSON.parse(storedUser);
-                    setUser(parsedUser);
-                    setIsAuthenticated(true);
-                } catch {
+            if (token) {
+                setIsAuthenticated(true);
+                if (storedUser && storedUser !== 'undefined') {
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        setUser(parsedUser);
+                    } catch {
+                        setUser(null);
+                    }
+                } else {
                     setUser(null);
-                    setIsAuthenticated(false);
                 }
             } else {
                 setUser(null);

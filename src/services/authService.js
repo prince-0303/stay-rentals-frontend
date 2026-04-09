@@ -14,6 +14,12 @@ export const login = async (email, password) => {
         const response = await api.post('/auth/login/', { email, password });
         console.log('[login] Backend response.data:', response.data);
 
+        const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token || response.data.token;
+        const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token;
+
+        if (access) localStorage.setItem('access_token', access);
+        if (refresh) localStorage.setItem('refresh_token', refresh);
+
         if (response.data.user) {
             // Block admin from logging into the main app frontend
             if (response.data.user.role === 'admin') {
@@ -21,9 +27,9 @@ export const login = async (email, password) => {
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token;
-            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token;
             setAuthUser(response.data.user, access, refresh);
+        } else if (access) {
+            window.dispatchEvent(new Event('auth-change'));
         }
 
         return response.data;
