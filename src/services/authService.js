@@ -16,20 +16,16 @@ export const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login/', { email, password });
 
-        // Extract tokens — backend may put them in the body OR in HttpOnly cookies.
-        // If no token in body, withCredentials: true ensures cookies are used for auth.
         const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token || response.data.accessToken || response.data.token || response.data.data?.access || response.data.data?.token || response.data.data?.accessToken || response.data.key || response.data.user?.token || response.data.user?.access_token || response.data.user?.accessToken || response.data.jwt;
         const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token || response.data.refreshToken || response.data.data?.refresh || response.data.user?.refresh_token || response.data.user?.refreshToken;
 
         if (!access) {
-            // Backend uses HttpOnly cookie JWTs — this is expected.
             console.log('[AUTH] No token in response body — backend uses cookie-based auth.');
         }
 
         let userData = response.data.user || response.data.data?.user;
 
         if (userData) {
-            // Normalize: backend may return 'name' instead of 'first_name'
             if (userData.name && !userData.first_name) {
                 const parts = userData.name.trim().split(' ');
                 userData = {
@@ -39,7 +35,6 @@ export const login = async (email, password) => {
                 };
             }
 
-            // Block admin from logging into the main app frontend
             if (userData.role === 'admin') {
                 try { await api.post('/auth/logout/'); } catch { /* ignore */ }
                 localStorage.removeItem('user');
@@ -50,7 +45,6 @@ export const login = async (email, password) => {
 
             setAuthUser(userData, access, refresh);
         } else if (access) {
-            // No user object but we have a token — update the header
             api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
             window.dispatchEvent(new Event('auth-change'));
         }
@@ -84,13 +78,8 @@ export const googleAuth = async (code) => {
                 throw { error: 'Admins must use the dedicated Admin portal to log in.' };
             }
 
-            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token || response.data.token || response.data.data?.access || response.data.data?.token || response.data.key;
-            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token || response.data.data?.refresh;
-
-            // Set tokens immediately
-            if (access) localStorage.setItem('access_token', access);
-
-            setAuthUser(response.data.user, access, refresh);
+            // Backend uses HttpOnly cookies — save user to localStorage so AuthContext detects login
+            setAuthUser(response.data.user, null, null);
         }
 
         return response.data;
@@ -104,14 +93,11 @@ export const googleAuth = async (code) => {
 export const register = async (formData) => {
     try {
         let config = {};
-
         if (formData instanceof FormData) {
             config = { headers: { 'Content-Type': 'multipart/form-data' } };
         }
-
         const response = await api.post('/auth/register/', formData, config);
         return response.data;
-
     } catch (error) {
         if (error.response) throw error.response.data;
         else if (error.request) throw { detail: 'Cannot connect to server' };
@@ -200,7 +186,6 @@ export const getProfile = async () => {
         const token = localStorage.getItem('access_token');
         console.log('Token in Storage:', token);
 
-        // Ensure the current request has the token if it was just saved, but ignore string 'null'
         const isValidToken = token && token !== 'null' && token !== 'undefined';
         const response = await api.get('/auth/profile/', {
             headers: isValidToken ? { Authorization: `Bearer ${token}` } : {}
@@ -239,11 +224,9 @@ export const updateAvatar = async (file) => {
     try {
         const formData = new FormData();
         if (file) formData.append('avatar', file);
-
         const response = await api.patch('/auth/profile/avatar/', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
-
         return response.data;
     } catch (error) {
         if (error.response) throw error.response.data;
