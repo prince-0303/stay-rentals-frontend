@@ -54,6 +54,7 @@ const Login = () => {
                 return;
             }
 
+            console.error('[LOGIN ERROR] Full error from backend:', err);
             let errorMessage = err.detail || err.message || 'Login failed. Please check your credentials.';
             setError(errorMessage);
         } finally {

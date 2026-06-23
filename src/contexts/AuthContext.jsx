@@ -12,9 +12,12 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('access_token');
             const storedUser = localStorage.getItem('user');
 
-            if (token) {
+            const hasToken = token && token !== 'null' && token !== 'undefined';
+            const hasUser = storedUser && storedUser !== 'null' && storedUser !== 'undefined';
+
+            if (hasToken || hasUser) {
                 setIsAuthenticated(true);
-                if (storedUser && storedUser !== 'undefined') {
+                if (hasUser) {
                     try {
                         const parsedUser = JSON.parse(storedUser);
                         setUser(parsedUser);
@@ -39,17 +42,19 @@ export const AuthProvider = ({ children }) => {
 
         // Listen to our custom event and cross-tab storage events
         window.addEventListener('auth-change', handleAuthChange);
+        window.addEventListener('auth-expired', handleAuthChange);
         window.addEventListener('storage', handleAuthChange);
         
         return () => {
             window.removeEventListener('auth-change', handleAuthChange);
+            window.removeEventListener('auth-expired', handleAuthChange);
             window.removeEventListener('storage', handleAuthChange);
         };
     }, []);
 
     return (
         <AuthContext.Provider value={{ user, isAuthenticated, loading }}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 };

@@ -124,9 +124,11 @@ const Navbar = () => {
     }, [notifOpen]);
 
     useEffect(() => {
+        const token = localStorage.getItem('access_token');
+        const isValidToken = token && token !== 'null' && token !== 'undefined';
+        if (!isValidToken) return;
         const fetchUser = async () => {
             try {
-                // optionally re-fetch from backend to make sure profile is fully up-to-date
                 const profile = await getProfile();
                 setUser(profile);
             } catch (error) {

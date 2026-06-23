@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { AuthProvider } from './contexts/AuthContext';
@@ -45,8 +45,22 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const AppContent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const hideNavPaths = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/mfa-verify'];
   const shouldHideNav = hideNavPaths.includes(location.pathname) || location.pathname.startsWith('/auth/callback');
+
+  // Listen for session expiry events dispatched by the api.js interceptor.
+  // Using React Router's navigate() instead of window.location.href prevents
+  // a hard page reload which would cause an infinite request loop.
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      if (window.location.pathname !== '/login') {
+        navigate('/login', { replace: true });
+      }
+    };
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
+  }, [navigate]);
 
   return (
     <div className="flex flex-col min-h-screen relative">
