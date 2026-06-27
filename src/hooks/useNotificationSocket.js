@@ -5,6 +5,7 @@ export const useNotificationSocket = (onUnreadUpdate) => {
     const wsRef = useRef(null);
     const reconnectRef = useRef(null);
     const mountedRef = useRef(true);
+    const retryCountRef = useRef(0);
 
     const callbackRef = useRef(onUnreadUpdate);
     useEffect(() => {
@@ -29,8 +30,15 @@ export const useNotificationSocket = (onUnreadUpdate) => {
         try {
             const tokenData = await chatService.getWsToken();
             token = tokenData.token;
+            retryCountRef.current = 0;
             localStorage.setItem('ws_access_token', token);
         } catch (e) {
+            const status = e?.response?.status;
+            if (status === 401 || retryCountRef.current >= 3) {
+                console.warn("Stopping notification ws retries.");
+                return;
+            }
+            retryCountRef.current += 1;
             console.warn("Failed to get notifications ws token, retrying in 10s");
             if (mountedRef.current) {
                 reconnectRef.current = setTimeout(connect, 10000);
@@ -40,7 +48,6 @@ export const useNotificationSocket = (onUnreadUpdate) => {
 
         if (!token || !mountedRef.current) return;
 
-        // ✅ Fixed — use window.location.host instead of parsing VITE_API_URL
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const host = window.location.host;
         const wsUrl = `${protocol}//${host}/ws/notifications/?token=${encodeURIComponent(token)}`;
