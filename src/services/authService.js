@@ -1,60 +1,30 @@
 import api from './api';
 
-// Helper: persist user AND notify same-tab listeners
-const setAuthUser = (userData, access, refresh) => {
+const setAuthUser = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
-    if (access) {
-        localStorage.setItem('access_token', access);
-        // CRITICAL: Update the api instance immediately so follow-up requests aren't 401
-        api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-    }
-    if (refresh) localStorage.setItem('refresh_token', refresh);
     window.dispatchEvent(new Event('auth-change'));
 };
 
 export const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login/', { email, password });
-
-        const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token || response.data.accessToken || response.data.token || response.data.data?.access || response.data.data?.token || response.data.data?.accessToken || response.data.key || response.data.user?.token || response.data.user?.access_token || response.data.user?.accessToken || response.data.jwt;
-        const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token || response.data.refreshToken || response.data.data?.refresh || response.data.user?.refresh_token || response.data.user?.refreshToken;
-
-        if (!access) {
-            console.log('[AUTH] No token in response body — backend uses cookie-based auth.');
-        }
-
         let userData = response.data.user || response.data.data?.user;
 
         if (userData) {
-            if (userData.name && !userData.first_name) {
-                const parts = userData.name.trim().split(' ');
-                userData = {
-                    ...userData,
-                    first_name: parts[0] || '',
-                    last_name: parts.slice(1).join(' ') || '',
-                };
-            }
-
             if (userData.role === 'admin') {
-                try { await api.post('/auth/logout/'); } catch { /* ignore */ }
+                try { await api.post('/auth/logout/'); } catch { }
                 localStorage.removeItem('user');
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-
-            setAuthUser(userData, access, refresh);
-        } else if (access) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-            window.dispatchEvent(new Event('auth-change'));
+            setAuthUser(userData);
         }
 
         return response.data;
 
     } catch (error) {
         if (error.response) {
-            if (error.response.data && error.response.data.user) {
-                setAuthUser(error.response.data.user, error.response.data.access, error.response.data.refresh);
+            if (error.response.data?.user) {
+                setAuthUser(error.response.data.user);
             }
             throw error.response.data;
         } else if (error.request) {
@@ -71,15 +41,11 @@ export const googleAuth = async (code) => {
 
         if (response.data.user) {
             if (response.data.user.role === 'admin') {
-                try { await api.post('/auth/logout/'); } catch { /* ignore */ }
+                try { await api.post('/auth/logout/'); } catch { }
                 localStorage.removeItem('user');
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
                 throw { error: 'Admins must use the dedicated Admin portal to log in.' };
             }
-
-            // Backend uses HttpOnly cookies — save user to localStorage so AuthContext detects login
-            setAuthUser(response.data.user, null, null);
+            setAuthUser(response.data.user);
         }
 
         return response.data;
@@ -169,12 +135,13 @@ export const logout = async () => {
     try {
         await api.post('/auth/logout/');
     } catch {
-        console.error('⚠️ Logout error (continuing)');
+        console.error('Logout error (continuing)');
     } finally {
         localStorage.removeItem('user');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('compare_list');
+        localStorage.removeItem('ws_access_token');
         delete api.defaults.headers.common['Authorization'];
         window.dispatchEvent(new Event('auth-expired'));
         window.dispatchEvent(new Event('auth-change'));
@@ -183,22 +150,14 @@ export const logout = async () => {
 
 export const getProfile = async () => {
     try {
-        const token = localStorage.getItem('access_token');
-        console.log('Token in Storage:', token);
-
-        const isValidToken = token && token !== 'null' && token !== 'undefined';
-        const response = await api.get('/auth/profile/', {
-            headers: isValidToken ? { Authorization: `Bearer ${token}` } : {}
-        });
-
+        const response = await api.get('/auth/profile/');
         const userData = response.data?.user || response.data;
         if (userData) {
             if (userData.role === 'admin') {
                 localStorage.removeItem('user');
-                localStorage.removeItem('access_token');
                 throw { detail: 'Admins must use the dedicated Admin portal.' };
             }
-            setAuthUser(userData, response.data?.access, response.data?.refresh);
+            setAuthUser(userData);
         }
         return userData;
     } catch (error) {
@@ -210,9 +169,7 @@ export const getProfile = async () => {
 export const updateProfile = async (profileData) => {
     try {
         const response = await api.patch('/auth/profile/', profileData);
-        if (response.data) {
-            setAuthUser(response.data);
-        }
+        if (response.data) setAuthUser(response.data);
         return response.data;
     } catch (error) {
         if (error.response) throw error.response.data;
@@ -302,13 +259,11 @@ export const verifyMfaLogin = async (mfa_session_token, code) => {
 
         if (response.data.user) {
             if (response.data.user.role === 'admin') {
-                try { await api.post('/auth/logout/'); } catch { /* ignore */ }
+                try { await api.post('/auth/logout/'); } catch { }
                 localStorage.removeItem('user');
                 throw { detail: 'Admins must use the dedicated Admin portal to log in.' };
             }
-            const access = response.data.access || response.data.tokens?.access || response.data.token?.access || response.data.access_token || response.data.token || response.data.data?.access || response.data.data?.token || response.data.key;
-            const refresh = response.data.refresh || response.data.tokens?.refresh || response.data.token?.refresh || response.data.refresh_token || response.data.data?.refresh;
-            setAuthUser(response.data.user, access, refresh);
+            setAuthUser(response.data.user);
         }
 
         return response.data;

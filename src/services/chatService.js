@@ -18,9 +18,7 @@ export const chatService = {
             return null;
         }
 
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.host;
-        const wsUrl = `${protocol}//${host}/ws/chat/${conversationId}/?token=${encodeURIComponent(token)}`;
+        const wsUrl = `${import.meta.env.VITE_WS_URL}/ws/chat/${conversationId}/?token=${encodeURIComponent(token)}`;
 
         console.log("WebSocket connecting to:", wsUrl);
 

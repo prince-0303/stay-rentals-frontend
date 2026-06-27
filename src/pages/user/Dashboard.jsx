@@ -95,7 +95,7 @@ const Dashboard = () => {
         if (activeTab === 'wishlist' || activeTab === 'visits' || activeTab === 'payments') {
             fetchTabData();
         }
-    }, [searchParams, user]);
+    }, [searchParams, user?.id]);
 
     const activeTab = searchParams.get('tab');
 
