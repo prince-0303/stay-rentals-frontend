@@ -175,11 +175,7 @@ const Navbar = () => {
         { name: 'Browse', path: '/listings' },
         { name: 'Recommendations', path: '/recommendations' },
         {
-            name: 'Wishlist', path: '/wishlist', badge: wishlistCount, icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                </svg>
-            )
+            name: 'Wishlist', path: '/wishlist', badge: wishlistCount
         },
         { name: 'Messages', path: '/chat', badge: totalUnread },
     ];
@@ -189,8 +185,11 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-[200] bg-white/80 backdrop-blur-xl border-b border-brand-gray-light/50 shadow-glass transition-all duration-300">
-            <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <nav className="fixed top-0 left-0 w-full z-[200] transition-all duration-300">
+            {/* Background layer decoupled from main container to prevent CSS containment on fixed children */}
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-brand-gray-light/50 shadow-glass pointer-events-none -z-10"></div>
+            
+            <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="flex items-center justify-between h-24">
                     {/* Logo - Matching 'Ez-Stay' style */}
                     <Link to="/" className="flex items-center group">
@@ -355,12 +354,106 @@ const Navbar = () => {
                             </div>
                         )}
 
-                        {/* Mobile Menu Toggle */}
-                        <button className="lg:hidden p-2 text-brand-blue-primary">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-                            </svg>
-                        </button>
+                        {/* Mobile Menu Toggle (CSS-only) */}
+                        <div className="lg:hidden flex items-center">
+                            <input type="checkbox" id="mobile-menu-toggle" className="peer hidden" />
+                            <label htmlFor="mobile-menu-toggle" className="p-2 text-brand-blue-primary cursor-pointer rounded-full transition-all duration-300 hover:bg-brand-gray-light/30 active:scale-75 active:bg-brand-gray-light/50 group z-[260]">
+                                <div className="relative w-6 h-6 flex flex-col justify-center items-center gap-1.5 overflow-hidden">
+                                    <span className="w-6 h-0.5 bg-current rounded-full transition-all duration-500 origin-center peer-checked:rotate-45 peer-checked:translate-y-2"></span>
+                                    <span className="w-6 h-0.5 bg-current rounded-full transition-all duration-500 peer-checked:translate-x-10 peer-checked:opacity-0"></span>
+                                    <span className="w-6 h-0.5 bg-current rounded-full transition-all duration-500 origin-center peer-checked:-rotate-45 peer-checked:-translate-y-2"></span>
+                                </div>
+                            </label>
+
+                            {/* Backdrop Overlay (Click to close) */}
+                            <label htmlFor="mobile-menu-toggle" className="fixed inset-0 bg-brand-gray-dark/40 backdrop-blur-sm z-[250] invisible opacity-0 transition-all duration-500 peer-checked:visible peer-checked:opacity-100 cursor-pointer"></label>
+
+                            {/* Mobile Side Drawer */}
+                            <div className="fixed top-0 left-0 w-[280px] sm:w-[320px] h-screen bg-brand-blue-primary text-white shadow-2xl flex flex-col z-[255] 
+                                            transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
+                                            -translate-x-full peer-checked:translate-x-0 overflow-hidden">
+                                
+                                {/* Drawer Header */}
+                                <div className="p-6 pt-8 pb-10 flex items-center">
+                                    <span className="text-3xl font-black text-white tracking-tight">
+                                        Ez-Stay<span className="text-brand-accent ml-0.5">•</span>
+                                    </span>
+                                </div>
+
+                                {/* Drawer Links */}
+                                <div className="flex flex-col px-4 space-y-2 overflow-y-auto flex-1 pb-8">
+                                    {navLinks.map((link) => {
+                                        const isActive = location.pathname === link.path;
+                                        return (
+                                            <label htmlFor="mobile-menu-toggle" key={link.path} className="w-full cursor-pointer">
+                                                <Link
+                                                    to={link.path}
+                                                    className={`text-lg font-bold transition-all duration-300 flex items-center gap-4 px-5 py-4 rounded-2xl ${isActive ? 'bg-white text-brand-blue-primary shadow-xl shadow-black/10 scale-105' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                                                >
+                                                    {link.icon && <span className={isActive ? 'text-brand-blue-primary' : 'text-white/70'}>{link.icon}</span>}
+                                                    {link.name}
+                                                    {link.badge > 0 && (
+                                                        <span className={`ml-auto text-xs font-black px-2.5 py-0.5 rounded-full shadow-sm ${isActive ? 'bg-brand-blue-primary text-white' : 'bg-brand-accent text-brand-blue-primary'}`}>
+                                                            {link.badge}
+                                                        </span>
+                                                    )}
+                                                </Link>
+                                            </label>
+                                        );
+                                    })}
+
+                                    {user && (
+                                        <>
+                                            <div className="h-px w-full bg-white/10 my-4" />
+                                            <input type="checkbox" id="mobile-profile-dropdown" className="peer hidden" />
+                                            <label htmlFor="mobile-profile-dropdown" className="w-full cursor-pointer text-lg font-bold transition-all duration-300 flex items-center gap-4 px-5 py-4 rounded-2xl text-white/80 hover:bg-white/10 hover:text-white select-none">
+                                                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                                My Profile
+                                                <svg className="w-5 h-5 ml-auto transition-transform duration-300 peer-checked:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
+                                            </label>
+
+                                            <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-300 peer-checked:grid-rows-[1fr] peer-checked:opacity-100">
+                                                <div className="overflow-hidden">
+                                                    <div className="flex flex-col space-y-1 pl-14 pr-4 pb-2">
+                                                        <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                            <Link to={isLister ? "/lister/dashboard" : "/dashboard"} className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Overview</Link>
+                                                        </label>
+                                                        {!isLister && (
+                                                            <>
+                                                                <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                                    <Link to="/dashboard?tab=wishlist" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Wishlist</Link>
+                                                                </label>
+                                                                <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                                    <Link to="/dashboard?tab=recently-viewed" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">History</Link>
+                                                                </label>
+                                                                <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                                    <Link to="/dashboard?tab=visits" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Visits</Link>
+                                                                </label>
+                                                                <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                                    <Link to="/dashboard?tab=payments" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Payments</Link>
+                                                                </label>
+                                                                <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                                    <Link to="/dashboard?tab=preferences" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Preferences</Link>
+                                                                </label>
+                                                            </>
+                                                        )}
+                                                        <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                            <Link to="/dashboard?tab=security" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Security</Link>
+                                                        </label>
+                                                        <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                            <Link to="/dashboard?tab=account" className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Actions</Link>
+                                                        </label>
+                                                        <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                            <button onClick={handleLogout} className="text-[15px] font-bold block py-3 text-red-400 hover:text-red-300 transition-colors text-left w-full">Logout</button>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -256,78 +256,96 @@ const BrowsePage = () => {
                 <div className="flex flex-col lg:flex-row gap-10">
                     {/* Sidebar Filters */}
                     {!isAiSearch && (
-                        <aside className="w-full lg:w-72 shrink-0 space-y-8 animate-in slide-in-from-left-4 duration-500">
-                            <div className="bg-white rounded-premium border border-brand-gray-light p-8 shadow-sm">
-                                <div className="flex items-center justify-between mb-8 pb-4 border-b border-brand-gray-light">
-                                    <h3 className="font-black text-brand-gray-dark tracking-tight">Filters</h3>
-                                    <button onClick={handleClearFilters} className="text-xs font-bold text-brand-blue-primary hover:text-brand-blue-dark">Reset</button>
-                                </div>
-
-                                <div className="space-y-8">
-                                    <div>
-                                        <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Property Type</label>
-                                        <select
-                                            value={filters.property_type}
-                                            onChange={e => setFilters({ ...filters, property_type: e.target.value })}
-                                            className="w-full bg-brand-offwhite border-none rounded-radius-button px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-brand-blue-primary/20"
-                                        >
-                                            <option value="">Any Type</option>
-                                            {['Apartment', 'House', 'Villa', 'PG', 'Hostel', 'Room'].map(t => <option key={t} value={t}>{t}</option>)}
-                                        </select>
+                        <aside className="w-full lg:w-72 shrink-0 animate-in slide-in-from-left-4 duration-500">
+                            {/* CSS-only Mobile Accordion Toggle */}
+                            <div className="bg-white rounded-[24px] lg:rounded-premium border border-brand-gray-light shadow-sm overflow-hidden mb-8">
+                                <input type="checkbox" id="mobile-filters-toggle" className="peer hidden lg:hidden" />
+                                
+                                <label htmlFor="mobile-filters-toggle" className="flex items-center justify-between p-6 lg:p-8 lg:pb-4 cursor-pointer lg:cursor-default border-b border-transparent peer-checked:border-brand-gray-light lg:border-b lg:border-brand-gray-light transition-colors">
+                                    <h3 className="font-black text-brand-gray-dark tracking-tight flex items-center gap-2">
+                                        <svg className="w-5 h-5 text-brand-blue-primary lg:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                                        Filters
+                                    </h3>
+                                    <div className="flex items-center gap-4">
+                                        <button onClick={(e) => { e.preventDefault(); handleClearFilters(); }} className="text-xs font-bold text-brand-blue-primary hover:text-brand-blue-dark">
+                                            Reset
+                                        </button>
+                                        <svg className="w-5 h-5 text-brand-gray-medium transition-transform duration-300 peer-checked:rotate-180 lg:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
                                     </div>
+                                </label>
 
-                                    <div>
-                                        <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Price Range (₹)</label>
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="number"
-                                                placeholder="Min"
-                                                value={filters.min_price}
-                                                onChange={e => setFilters({ ...filters, min_price: e.target.value })}
-                                                className="w-full bg-brand-offwhite border-none rounded-radius-button px-3 py-2.5 text-xs font-bold focus:ring-2 focus:ring-brand-blue-primary/20"
-                                            />
-                                            <span className="text-brand-gray-medium">—</span>
-                                            <input
-                                                type="number"
-                                                placeholder="Max"
-                                                value={filters.max_price}
-                                                onChange={e => setFilters({ ...filters, max_price: e.target.value })}
-                                                className="w-full bg-brand-offwhite border-none rounded-radius-button px-3 py-2.5 text-xs font-bold focus:ring-2 focus:ring-brand-blue-primary/20"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Preferred Tenant</label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {['Male', 'Female', 'Family', 'Couple'].map(t => (
-                                                <button
-                                                    key={t}
-                                                    onClick={() => setFilters({ ...filters, preferred_tenant: filters.preferred_tenant === t ? '' : t })}
-                                                    className={`py-2 px-3 rounded-radius-button text-[10px] font-black tracking-wider transition-all border ${filters.preferred_tenant === t ? 'bg-brand-blue-primary border-brand-blue-primary text-white shadow-md' : 'bg-brand-offwhite border-transparent text-brand-gray-medium hover:text-brand-gray-dark'}`}
+                                <div className="grid grid-rows-[0fr] opacity-0 lg:grid-rows-[1fr] lg:opacity-100 transition-all duration-500 peer-checked:grid-rows-[1fr] peer-checked:opacity-100">
+                                    <div className="overflow-hidden">
+                                        <div className="p-6 lg:p-8 lg:pt-8 space-y-8">
+                                            <div>
+                                                <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Property Type</label>
+                                                <select
+                                                    value={filters.property_type}
+                                                    onChange={e => setFilters({ ...filters, property_type: e.target.value })}
+                                                    className="w-full bg-brand-offwhite border-none rounded-radius-button px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-brand-blue-primary/20 appearance-none pr-8 cursor-pointer"
+                                                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238BA8B6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1em 1em' }}
                                                 >
-                                                    {t.toUpperCase()}
-                                                </button>
-                                            ))}
+                                                    <option value="">Any Type</option>
+                                                    {['Apartment', 'House', 'Villa', 'PG', 'Hostel', 'Room'].map(t => <option key={t} value={t}>{t}</option>)}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Price Range (₹)</label>
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Min"
+                                                        value={filters.min_price}
+                                                        onChange={e => setFilters({ ...filters, min_price: e.target.value })}
+                                                        className="w-full bg-brand-offwhite border-none rounded-radius-button px-3 py-2.5 text-xs font-bold focus:ring-2 focus:ring-brand-blue-primary/20"
+                                                    />
+                                                    <span className="text-brand-gray-medium">—</span>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Max"
+                                                        value={filters.max_price}
+                                                        onChange={e => setFilters({ ...filters, max_price: e.target.value })}
+                                                        className="w-full bg-brand-offwhite border-none rounded-radius-button px-3 py-2.5 text-xs font-bold focus:ring-2 focus:ring-brand-blue-primary/20"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="text-xs font-black text-brand-gray-medium uppercase tracking-widest block mb-4">Preferred Tenant</label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {['Male', 'Female', 'Family', 'Couple'].map(t => (
+                                                        <button
+                                                            key={t}
+                                                            onClick={() => setFilters({ ...filters, preferred_tenant: filters.preferred_tenant === t ? '' : t })}
+                                                            className={`py-2 px-3 rounded-radius-button text-[10px] font-black tracking-wider transition-all border ${filters.preferred_tenant === t ? 'bg-brand-blue-primary border-brand-blue-primary text-white shadow-md' : 'bg-brand-offwhite border-transparent text-brand-gray-medium hover:text-brand-gray-dark'}`}
+                                                        >
+                                                            {t.toUpperCase()}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <label className="flex items-center gap-3 cursor-pointer group">
+                                                <div className={`w-10 h-6 rounded-full transition-colors relative ${filters.pet_friendly ? 'bg-brand-blue-primary' : 'bg-brand-gray-medium/30'}`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="sr-only"
+                                                        checked={filters.pet_friendly}
+                                                        onChange={e => setFilters({ ...filters, pet_friendly: e.target.checked })}
+                                                    />
+                                                    <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${filters.pet_friendly ? 'translate-x-4' : ''}`} />
+                                                </div>
+                                                <span className="text-xs font-bold text-brand-gray-dark">Pet Friendly</span>
+                                            </label>
+
+                                            <Button variant="primary" fullWidth className="py-4 shadow-lg shadow-brand-blue-primary/20" onClick={() => fetchAll()}>
+                                                Apply Filters
+                                            </Button>
                                         </div>
                                     </div>
-
-                                    <label className="flex items-center gap-3 cursor-pointer group">
-                                        <div className={`w-10 h-6 rounded-full transition-colors relative ${filters.pet_friendly ? 'bg-brand-blue-primary' : 'bg-brand-gray-medium/30'}`}>
-                                            <input
-                                                type="checkbox"
-                                                className="sr-only"
-                                                checked={filters.pet_friendly}
-                                                onChange={e => setFilters({ ...filters, pet_friendly: e.target.checked })}
-                                            />
-                                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${filters.pet_friendly ? 'translate-x-4' : ''}`} />
-                                        </div>
-                                        <span className="text-xs font-bold text-brand-gray-dark">Pet Friendly</span>
-                                    </label>
-
-                                    <Button variant="primary" fullWidth className="py-4 shadow-lg shadow-brand-blue-primary/20" onClick={() => fetchAll()}>
-                                        Apply Filters
-                                    </Button>
                                 </div>
                             </div>
 

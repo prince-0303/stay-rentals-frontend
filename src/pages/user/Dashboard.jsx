@@ -161,7 +161,7 @@ const Dashboard = () => {
         if (kycStatus.status === 'pending') {
             return (
                 <div className="min-h-screen bg-brand-offwhite flex flex-col items-center justify-center p-6 pb-24">
-                    <div className="bg-white p-12 rounded-[40px] shadow-2xl max-w-[448px] w-full text-center space-y-8 border border-brand-gray-light">
+                    <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-2xl max-w-[448px] w-full text-center space-y-8 border border-brand-gray-light">
                         <div className="w-24 h-24 bg-brand-offwhite rounded-full flex items-center justify-center mx-auto relative overflow-hidden">
                             <div className="absolute inset-0 bg-brand-blue-primary/10 animate-pulse" />
                             <svg className="w-8 h-8 text-brand-blue-primary relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

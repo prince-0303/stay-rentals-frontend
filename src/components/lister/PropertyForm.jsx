@@ -141,7 +141,7 @@ const PropertyForm = ({ initialData = null, onSubmit, loading, onCancel }) => {
     );
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white border border-brand-gray-light rounded-[48px] p-10 md:p-16 shadow-sm overflow-hidden relative">
+        <form onSubmit={handleSubmit} className="bg-white border border-brand-gray-light rounded-[48px] p-6 md:p-10 lg:p-16 shadow-sm overflow-hidden relative">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-blue-primary/5 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none" />
 
             <StepIndicator />
@@ -171,7 +171,7 @@ const PropertyForm = ({ initialData = null, onSubmit, loading, onCancel }) => {
 
             {step === 2 && (
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <Input label="BEDROOMS" type="number" name="total_rooms" value={formData.total_rooms} onChange={handleChange} />
                         <Input label="BATHROOMS" type="number" name="bathrooms" value={formData.bathrooms} onChange={handleChange} />
                         <Input label="KITCHENS" type="number" name="kitchens" value={formData.kitchens} onChange={handleChange} />

@@ -137,98 +137,24 @@ const RecommendationsPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
-                    {/* Left Panel: Preferences */}
-                    <aside className="lg:col-span-1 space-y-8 sticky top-32">
-                        <section className="bg-white p-8 rounded-premium border border-brand-gray-light shadow-sm">
-                            <h2 className="text-xl font-black mb-6 flex items-center gap-3">
-                                <div className="w-1.5 h-6 bg-brand-blue-primary rounded-full" />
-                                My Profile
-                            </h2>
-
-                            <form onSubmit={handleSavePreferences} className="space-y-6">
-                                <Input
-                                    label="Target City"
-                                    value={city}
-                                    onChange={e => setCity(e.target.value)}
-                                    placeholder="e.g. Mumbai"
-                                    className="text-sm font-bold"
-                                />
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Input
-                                        label="Min Budget"
-                                        type="number"
-                                        value={minBudget}
-                                        onChange={e => setMinBudget(e.target.value)}
-                                        placeholder="Min"
-                                        className="text-sm font-bold"
-                                    />
-                                    <Input
-                                        label="Max Budget"
-                                        type="number"
-                                        value={maxBudget}
-                                        onChange={e => setMaxBudget(e.target.value)}
-                                        placeholder="Max"
-                                        className="text-sm font-bold"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase block mb-3">Property Styles</label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {['Apartment', 'House', 'PG', 'Villa'].map(type => (
-                                            <button
-                                                key={type}
-                                                type="button"
-                                                onClick={() => {
-                                                    const exists = propertyTypes.includes(type);
-                                                    setPropertyTypes(exists ? propertyTypes.filter(t => t !== type) : [...propertyTypes, type]);
-                                                }}
-                                                className={`px-4 py-2 rounded-full text-xs font-black transition-all border ${propertyTypes.includes(type) ? 'bg-brand-blue-primary text-white border-brand-blue-primary' : 'bg-brand-offwhite text-brand-gray-medium border-transparent hover:border-brand-gray-light'}`}
-                                            >
-                                                {type}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase block mb-3">Required Amenities</label>
-                                    <input
-                                        type="text"
-                                        value={amenityInput}
-                                        onChange={e => setAmenityInput(e.target.value)}
-                                        onKeyDown={handleAmenityKeyDown}
-                                        placeholder="Add & Enter..."
-                                        className="w-full bg-brand-offwhite border border-transparent rounded-radius-button py-3 px-4 text-xs font-bold focus:ring-2 focus:ring-brand-blue-primary/20 outline-none transition-all placeholder:text-brand-gray-light"
-                                    />
-                                    <div className="flex flex-wrap gap-2 mt-3">
-                                        {amenities.map(am => (
-                                            <Badge key={am} variant="primary" className="bg-brand-blue-primary/10 text-brand-blue-primary border-none flex items-center gap-1 pr-1">
-                                                {am}
-                                                <button type="button" onClick={() => removeAmenity(am)} className="hover:text-brand-blue-dark">
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                </button>
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="pt-2 flex items-center gap-3">
-                                    <input
-                                        type="checkbox"
-                                        id="pet-toggle"
-                                        checked={petFriendly}
-                                        onChange={e => setPetFriendly(e.target.checked)}
-                                        className="w-5 h-5 rounded-md text-brand-blue-primary focus:ring-brand-blue-primary/20 bg-brand-offwhite border-brand-gray-light cursor-pointer"
-                                    />
-                                    <label htmlFor="pet-toggle" className="text-xs font-black text-brand-gray-dark cursor-pointer uppercase tracking-tight">Pet Friendly Only</label>
-                                </div>
-
-                                <Button type="submit" variant="primary" fullWidth isLoading={loading} className="py-4 shadow-lg shadow-brand-blue-primary/10">
-                                    Update My Feed
-                                </Button>
-                            </form>
+                    {/* Left Panel: Preferences Redirection */}
+                    <aside className="lg:col-span-1 space-y-8 lg:sticky lg:top-32">
+                        <section className="bg-white p-8 rounded-premium border border-brand-gray-light shadow-sm text-center">
+                            <div className="w-16 h-16 bg-brand-blue-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-blue-primary">
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                            </div>
+                            <h2 className="text-xl font-black mb-3">Refine Your Feed</h2>
+                            <p className="text-xs font-bold text-brand-gray-medium mb-8 leading-relaxed">Update your lifestyle preferences and target location to get better AI-curated property matches.</p>
+                            
+                            <Button 
+                                variant="primary" 
+                                fullWidth 
+                                className="py-4 shadow-lg shadow-brand-blue-primary/10 flex items-center justify-center gap-2"
+                                onClick={() => window.location.href = '/dashboard?tab=preferences'}
+                            >
+                                Update Preferences
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+                            </Button>
                         </section>
                     </aside>
 

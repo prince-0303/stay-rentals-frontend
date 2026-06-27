@@ -55,10 +55,10 @@ const HeroSearchBar = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full p-2.5 flex flex-col md:flex-row gap-3 shadow-2xl items-center w-full">
+            <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[28px] md:rounded-full p-3 flex flex-col md:flex-row shadow-2xl items-center w-full transition-all duration-300">
                 {aiMode ? (
-                    <div className="flex-1 flex items-center gap-3 bg-white/10 rounded-[20px] px-5 py-3">
-                        <svg className="w-4 h-4 text-brand-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex-1 flex items-center gap-3 bg-white/5 rounded-2xl md:rounded-full px-5 py-4 w-full">
+                        <svg className="w-5 h-5 text-brand-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         <input
@@ -66,13 +66,13 @@ const HeroSearchBar = () => {
                             value={aiQuery}
                             onChange={e => setAiQuery(e.target.value)}
                             placeholder="e.g. 2BHK apartment in Mumbai under ₹20,000..."
-                            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/50 text-sm font-medium"
+                            className="flex-1 bg-transparent border-none outline-none text-white placeholder:text-white/50 text-base font-medium w-full"
                         />
                     </div>
                 ) : (
-                    <>
+                    <div className="flex flex-col md:flex-row w-full bg-white/5 md:bg-transparent rounded-2xl md:rounded-none p-1 md:p-0">
                         {/* Location */}
-                        <div className="flex-1 flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 min-w-[200px]">
+                        <div className="flex-1 flex items-center gap-3 px-4 py-3.5 rounded-xl md:rounded-none hover:bg-white/10 transition-colors">
                             <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -87,49 +87,54 @@ const HeroSearchBar = () => {
                         </div>
 
                         {/* Divider */}
-                        <div className="hidden md:block w-px h-8 bg-white/20 self-center mx-2" />
+                        <div className="hidden md:block w-px h-10 bg-white/20 self-center mx-1" />
+                        <div className="md:hidden w-full h-px bg-white/10 my-0.5" />
 
-                        {/* Property Type */}
-                        <div className="flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 whitespace-nowrap">
-                            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <select
-                                value={propertyType}
-                                onChange={e => setPropertyType(e.target.value)}
-                                className="bg-transparent border-none outline-none text-white text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-8"
-                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
-                            >
-                                {PROPERTY_TYPES.map(t => <option key={t}>{t}</option>)}
-                            </select>
+                        {/* Property Type & Price Row (Mobile) */}
+                        <div className="flex flex-row items-center w-full md:w-auto">
+                            {/* Property Type */}
+                            <div className="flex-1 md:flex-none flex items-center gap-2 px-4 py-3.5 rounded-xl md:rounded-none hover:bg-white/10 transition-colors relative">
+                                <svg className="w-5 h-5 text-white/70 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                <select
+                                    value={propertyType}
+                                    onChange={e => setPropertyType(e.target.value)}
+                                    className="w-full bg-transparent border-none outline-none text-white text-sm sm:text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-6 truncate"
+                                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0 center', backgroundRepeat: 'no-repeat', backgroundSize: '1em 1em' }}
+                                >
+                                    {PROPERTY_TYPES.map(t => <option key={t}>{t}</option>)}
+                                </select>
+                            </div>
+
+                            {/* Vertical Divider Mobile/Desktop */}
+                            <div className="w-px h-8 bg-white/10 self-center mx-1 md:hidden" />
+                            <div className="hidden md:block w-px h-10 bg-white/20 self-center mx-1" />
+
+                            {/* Max Price */}
+                            <div className="flex-1 md:flex-none flex items-center gap-2 px-4 py-3.5 rounded-xl md:rounded-none hover:bg-white/10 transition-colors relative">
+                                <svg className="w-5 h-5 text-white/70 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <select
+                                    value={maxPrice}
+                                    onChange={e => setMaxPrice(e.target.value)}
+                                    className="w-full bg-transparent border-none outline-none text-white text-sm sm:text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-6 truncate"
+                                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0 center', backgroundRepeat: 'no-repeat', backgroundSize: '1em 1em' }}
+                                >
+                                    {PRICE_RANGES.map(p => <option key={p.label} value={p.value}>{p.label}</option>)}
+                                </select>
+                            </div>
                         </div>
-
-                        {/* Divider */}
-                        <div className="hidden md:block w-px h-8 bg-white/20 self-center mx-2" />
-
-                        {/* Max Price */}
-                        <div className="flex items-center gap-3 bg-white/10 rounded-full px-6 py-3.5 whitespace-nowrap">
-                            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <select
-                                value={maxPrice}
-                                onChange={e => setMaxPrice(e.target.value)}
-                                className="bg-transparent border-none outline-none text-white text-base font-semibold cursor-pointer [&>option]:text-brand-gray-dark [&>option]:bg-white appearance-none pr-8"
-                                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
-                            >
-                                {PRICE_RANGES.map(p => <option key={p.label} value={p.value}>{p.label}</option>)}
-                            </select>
-                        </div>
-                    </>
+                    </div>
                 )}
 
                 {/* Search Button */}
                 <button
                     type="submit"
-                    className={`shrink-0 px-8 py-3.5 rounded-full font-black text-base tracking-wide transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-lg whitespace-nowrap w-full md:w-auto ml-0 md:ml-auto ${aiMode
+                    className={`shrink-0 px-8 py-4 mt-2 md:mt-0 ml-0 md:ml-3 rounded-[20px] md:rounded-full font-black text-base tracking-wide transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-lg whitespace-nowrap w-full md:w-auto ${aiMode
                         ? 'bg-brand-accent text-brand-blue-primary shadow-brand-accent/30'
-                        : 'bg-brand-blue-primary text-white shadow-brand-blue-primary/40'
+                        : 'bg-brand-blue-primary text-white shadow-brand-blue-primary/40 hover:bg-brand-blue-dark'
                         }`}
                 >
                     <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,32 +210,33 @@ const Home = () => {
         <div className="min-h-screen bg-white text-brand-gray-dark selection:bg-brand-blue-muted/30 font-sans">
             
             {/* 1. Landing Screen & Welcome Note */}
-            <section className="relative pt-24 pb-16 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden animate-fade-in">
-                <div className="relative z-10 bg-brand-gray-light rounded-[40px] overflow-hidden min-h-[80vh] flex flex-col items-center justify-center text-center p-8 sm:p-16 shadow-2xl">
-                    <div className="absolute inset-0 z-0 group">
-                        <img
-                            src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"
-                            className="w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105"
-                            alt="Luxury Background"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+            <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden animate-fade-in pt-12 mt-0">
+                {/* Full-width Background Image */}
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"
+                        className="w-full h-full object-cover opacity-90 scale-105"
+                        alt="Luxury Background"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-gray-dark/70 via-brand-gray-dark/40 to-brand-gray-dark/95" />
+                </div>
+
+                <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center">
+                    <div className="inline-flex py-1.5 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-6 shadow-xl">
+                        Welcome to Ez-Stay
                     </div>
+                    <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tight leading-tight text-white drop-shadow-2xl mb-6 w-full">
+                        Find Your Next{' '}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-brand-blue-primary">
+                            Perfect Space
+                        </span>
+                    </h1>
+                    <p className="text-base sm:text-lg lg:text-2xl text-gray-200 font-medium leading-relaxed max-w-3xl mx-auto mb-10 drop-shadow-md">
+                        Search by location, type, and budget — or let our AI find the perfect property for you.
+                    </p>
 
-                    <div className="relative z-10 w-full flex flex-col items-center justify-center text-center px-4 md:px-10">
-                        <div className="inline-flex py-1.5 px-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold tracking-widest uppercase mb-8">
-                            Welcome to Ez-Stay
-                        </div>
-                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-tight text-white drop-shadow-md mb-6 w-full whitespace-normal">
-                            Find Your Next{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-brand-blue-primary whitespace-nowrap">
-                                Perfect Space
-                            </span>
-                        </h1>
-                        <p className="text-base sm:text-lg lg:text-xl text-gray-200 font-medium leading-relaxed max-w-3xl mx-auto mb-2 w-full">
-                            Search by location, type, and budget — or let our AI find the perfect property for you.
-                        </p>
-
-                        {/* Hero Search Bar */}
+                    {/* Hero Search Bar */}
+                    <div className="w-full max-w-4xl mx-auto">
                         <HeroSearchBar />
                     </div>
                 </div>

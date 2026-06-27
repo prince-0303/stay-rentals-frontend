@@ -60,7 +60,7 @@ const Sidebar = ({ role, activeTab, onTabChange }) => {
     const displayItems = role === 'lister' ? listerItems : [...commonItems, ...userItems];
 
     return (
-        <aside className="bg-white rounded-[32px] border-2 border-brand-gray-light shadow-sm p-4 h-fit sticky top-32 lg:col-span-3">
+        <aside className="hidden lg:block bg-white rounded-[32px] border-2 border-brand-gray-light shadow-sm p-4 h-fit sticky top-32 lg:col-span-3">
             <div className="space-y-1">
                 {displayItems.map((item, index) => {
                     if (item.section) {
