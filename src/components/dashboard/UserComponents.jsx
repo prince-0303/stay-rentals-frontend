@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { deactivateAccount, deleteAccount } from '../../services/authService';
 import { propertyService } from '../../services/propertyService';
 import PropertyCard from '../property/PropertyCard';
+import { requestNotificationPermission } from '../../hooks/usePushNotifications';
 
 export const RecentlyViewed = () => {
     const [recent, setRecent] = useState([]);
@@ -170,7 +171,6 @@ export const NotificationSettings = () => {
     const [status, setStatus] = useState(Notification.permission);
 
     const handleEnable = async () => {
-        const { requestNotificationPermission } = await import('../../hooks/usePushNotifications');
         await requestNotificationPermission();
         setStatus(Notification.permission);
     };

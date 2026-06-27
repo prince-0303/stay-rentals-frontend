@@ -1,16 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { messaging, getToken, onMessage } from '../config/firebase.config';
 import api from '../services/api';
 
 const registerToken = async () => {
     try {
-        // Check permission first
         if (Notification.permission !== 'granted') {
             console.warn('Notification permission not granted');
             return;
         }
 
-        // Register service worker explicitly
         let registration;
         try {
             registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
@@ -20,7 +18,6 @@ const registerToken = async () => {
             return;
         }
 
-        // Get FCM token
         let token;
         try {
             token = await getToken(messaging, {
@@ -39,7 +36,6 @@ const registerToken = async () => {
 
         console.log('FCM token obtained:', token.substring(0, 20) + '...');
 
-        // Register with backend
         try {
             const response = await api.post('/notifications/register-token/', { token });
             console.log('FCM token registered with backend:', response.data);
@@ -63,6 +59,8 @@ export const requestNotificationPermission = async () => {
 };
 
 export const usePushNotifications = () => {
+    const tokenRegistered = useRef(false);
+
     useEffect(() => {
         const user = (() => {
             try { return JSON.parse(localStorage.getItem('user')); }
@@ -76,16 +74,19 @@ export const usePushNotifications = () => {
 
         console.log('Setting up push notifications for user:', user.email || user.id);
 
-        if (Notification.permission === 'granted') {
-            registerToken();
-        } else if (Notification.permission === 'default') {
-            // Request permission
-            requestNotificationPermission();
-        } else {
-            console.warn('Notification permission denied');
+        if (!tokenRegistered.current) {
+            if (Notification.permission === 'granted') {
+                tokenRegistered.current = true;
+                registerToken();
+            } else if (Notification.permission === 'default') {
+                requestNotificationPermission().then(() => {
+                    tokenRegistered.current = true;
+                });
+            } else {
+                console.warn('Notification permission denied');
+            }
         }
 
-        // Handle foreground notifications
         const unsubscribe = onMessage(messaging, (payload) => {
             console.log('Foreground FCM message received:', payload);
             const conversationId = payload.data?.conversation_id;
