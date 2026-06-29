@@ -313,8 +313,8 @@ const PropertyDetailPage = () => {
                 </div>
 
                 {/* Gallery Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-16 h-[500px]">
-                    <div className="lg:col-span-3 h-full rounded-premium overflow-hidden bg-brand-gray-light relative group">
+                <div className={`grid grid-cols-1 ${displayImages.length > 1 ? 'lg:grid-cols-4' : 'lg:grid-cols-1'} gap-4 mb-16 h-auto sm:h-[400px] lg:h-[500px]`}>
+                    <div className={`${displayImages.length > 1 ? 'lg:col-span-3' : 'lg:col-span-1'} h-full rounded-premium overflow-hidden bg-brand-gray-light relative group`}>
                         <img
                             src={displayImages[activeImg]}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -342,7 +342,7 @@ const PropertyDetailPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
                     {/* Left Side: Property Info */}
                     <div className="lg:col-span-2 space-y-12">
-                        <section className="bg-white p-10 rounded-premium border border-brand-gray-light shadow-sm">
+                        <section className="bg-white p-6 sm:p-8 rounded-premium border border-brand-gray-light shadow-sm">
                             <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
                                 <div className="w-2 h-8 bg-brand-blue-primary rounded-full" />
                                 Description
@@ -386,7 +386,7 @@ const PropertyDetailPage = () => {
                         </section>
 
                         {/* Reviews */}
-                        <section className="bg-white p-10 rounded-premium border border-brand-gray-light shadow-sm">
+                        <section className="bg-white p-6 sm:p-8 rounded-premium border border-brand-gray-light shadow-sm">
                             <div className="flex items-center justify-between mb-10">
                                 <h2 className="text-2xl font-black">User Reviews</h2>
                                 <Badge variant="neutral" className="bg-brand-gray-light">TOP RATED</Badge>
@@ -433,7 +433,7 @@ const PropertyDetailPage = () => {
                     {/* Right Side: Booking Card */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-32 space-y-6">
-                            <div className="bg-brand-blue-primary rounded-[40px] p-10 text-white shadow-2xl relative">
+                            <div className="bg-brand-blue-primary rounded-[40px] p-6 sm:p-8 text-white shadow-2xl relative">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
                                 <div className="mb-10 flex justify-between items-end border-b border-white/10 pb-6 pointer-events-auto relative z-10">
