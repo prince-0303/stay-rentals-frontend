@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../common/Badge';
+import LoginPromptModal from '../common/LoginPromptModal';
 import { usePaymentStatus } from '../../hooks/usePaymentStatus';
 
 const PLACEHOLDER = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="%23F3F4F6"/><text x="50%25" y="50%25" font-family="sans-serif" font-weight="bold" font-size="16" fill="%239CA3AF" text-anchor="middle" dy=".35em">Ez-Stay Premium</text></svg>';
@@ -20,6 +21,7 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
     const [imgError, setImgError] = useState(false);
     const resolvedSrc = useMemo(() => getPrimaryImage(property), [property]);
     const displaySrc = imgError || !resolvedSrc ? PLACEHOLDER : resolvedSrc;
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     useEffect(() => {
         setLiked(!!isWishlisted);
@@ -33,7 +35,8 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
         const userStr = localStorage.getItem('user');
         const isLoggedIn = userStr && userStr !== 'null' && userStr !== 'undefined';
         if (!isLoggedIn) {
-            return navigate('/login', { state: { from: window.location.pathname } });
+            setShowAuthModal(true);
+            return;
         }
         setLiked(prev => !prev);
         if (onToggleWishlist) onToggleWishlist(property.id, liked);
@@ -79,6 +82,7 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
     }
 
     return (
+        <div className="h-full">
         <Link
             to={`/listings/${property.id}`}
             className={`group relative rounded-premium overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 flex flex-col h-full border-2 border-brand-gray-light ${isPaid ? 'opacity-75 pointer-events-none' : ''}`}
@@ -202,7 +206,14 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
                     )}
                 </div>
             </div>
-        </Link>
+            </Link>
+
+            <LoginPromptModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                message="Sign in to save this property to your wishlist!"
+            />
+        </div>
     );
 };
 

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/common/Footer';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
+import LoginPromptModal from '../../components/common/LoginPromptModal';
 import { propertyService } from '../../services/propertyService';
 import { chatService } from '../../services/chatService';
 import api from '../../services/api';
@@ -31,6 +32,8 @@ const PropertyDetailPage = () => {
         overall_rating: 5, cleanliness_rating: 5, value_rating: 5, location_rating: 5, owner_behavior_rating: 5, review_text: ''
     });
     const [submittingReview, setSubmittingReview] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authModalMessage, setAuthModalMessage] = useState('');
 
     const user = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } })();
     const currentUser = user; // Sustain backward compatibility if needed
@@ -86,7 +89,11 @@ const PropertyDetailPage = () => {
     }, [id]);
 
     const handleToggleSave = async () => {
-        if (!currentUser) return navigate('/login');
+        if (!currentUser) {
+            setAuthModalMessage('Sign in to save this property to your wishlist!');
+            setShowAuthModal(true);
+            return;
+        }
         try {
             if (isSaved) {
                 await propertyService.unsaveProperty(id);
@@ -117,7 +124,11 @@ const PropertyDetailPage = () => {
     };
 
     const handleRequestVisit = async () => {
-        if (!currentUser) return navigate('/login');
+        if (!currentUser) {
+            setAuthModalMessage('Sign in to schedule a property visit!');
+            setShowAuthModal(true);
+            return;
+        }
         if (!visitDate) return setVisitStatus('Select a date first.');
         try {
             setVisitLoading(true);
@@ -131,7 +142,11 @@ const PropertyDetailPage = () => {
     };
 
     const handleStartChat = async () => {
-        if (!currentUser) return navigate('/login');
+        if (!currentUser) {
+            setAuthModalMessage('Sign in to chat with the property owner!');
+            setShowAuthModal(true);
+            return;
+        }
         try {
             setChatLoading(true);
             const res = await chatService.startConversation(id);
@@ -158,7 +173,11 @@ const PropertyDetailPage = () => {
     };
 
     const handlePayAdvance = async () => {
-        if (!currentUser) return navigate('/login', { state: { from: window.location.pathname } });
+        if (!currentUser) {
+            setAuthModalMessage('Sign in to make an advance payment for this property!');
+            setShowAuthModal(true);
+            return;
+        }
         try {
             const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
             if (!razorpayKey) {
@@ -512,6 +531,12 @@ const PropertyDetailPage = () => {
             </main>
 
             <Footer />
+
+            <LoginPromptModal
+                isOpen={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                message={authModalMessage}
+            />
         </div>
     );
 };
