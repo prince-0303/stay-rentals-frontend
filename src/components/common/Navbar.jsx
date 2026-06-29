@@ -170,14 +170,15 @@ const Navbar = () => {
         { name: 'Dashboard', path: '/lister/dashboard' },
         { name: 'My Listings', path: '/my-listings' },
         { name: 'Messages', path: '/chat', badge: totalUnread },
-    ] : [
+    ] : user ? [
         { name: 'Home', path: '/' },
         { name: 'Browse', path: '/listings' },
         { name: 'Recommendations', path: '/recommendations' },
-        {
-            name: 'Wishlist', path: '/wishlist', badge: wishlistCount
-        },
+        { name: 'Wishlist', path: '/wishlist', badge: wishlistCount },
         { name: 'Messages', path: '/chat', badge: totalUnread },
+    ] : [
+        { name: 'Home', path: '/' },
+        { name: 'Browse', path: '/listings' },
     ];
 
     if (compareCount > 0) {
@@ -343,13 +344,13 @@ const Navbar = () => {
                                     to="/login"
                                     className="hidden sm:block text-[15px] font-bold text-brand-gray-dark hover:text-brand-blue-primary transition-colors"
                                 >
-                                    Login
+                                    Sign In
                                 </Link>
                                 <Button
                                     className="px-8 py-3 bg-brand-blue-primary text-white font-black hover:bg-brand-blue-dark shadow-xl active:scale-95"
                                     onClick={() => navigate('/register')}
                                 >
-                                    Sign Up
+                                    Get Started
                                 </Button>
                             </div>
                         )}
@@ -402,7 +403,7 @@ const Navbar = () => {
                                         );
                                     })}
 
-                                    {user && (
+                                    {user ? (
                                         <>
                                             <div className="h-px w-full bg-white/10 my-4" />
                                             <input type="checkbox" id="mobile-profile-dropdown" className="peer hidden" />
@@ -449,6 +450,20 @@ const Navbar = () => {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="h-px w-full bg-white/10 my-4" />
+                                            <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                <Link to="/login" className="flex items-center gap-4 px-5 py-4 rounded-2xl text-white/80 hover:bg-white/10 hover:text-white text-lg font-bold transition-all duration-300">
+                                                    Sign In
+                                                </Link>
+                                            </label>
+                                            <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
+                                                <Link to="/register" className="flex items-center justify-center gap-4 px-5 py-4 rounded-2xl bg-white text-brand-blue-primary text-lg font-black transition-all duration-300 hover:bg-brand-accent mt-2">
+                                                    Get Started
+                                                </Link>
+                                            </label>
                                         </>
                                     )}
                                 </div>

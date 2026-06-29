@@ -60,10 +60,10 @@ const BrowsePage = () => {
 
             const params = {};
             if (currentSearch) params.city = currentSearch;
-            if (currentFilters.property_type) params.property_type = currentFilters.property_type;
+            if (currentFilters.property_type) params.property_type = currentFilters.property_type.toLowerCase();
             if (currentFilters.min_price) params.min_price = currentFilters.min_price;
             if (currentFilters.max_price) params.max_price = currentFilters.max_price;
-            if (currentFilters.preferred_tenant) params.preferred_tenant = currentFilters.preferred_tenant;
+            if (currentFilters.preferred_tenant) params.preferred_tenants = currentFilters.preferred_tenant.toLowerCase();
             if (currentFilters.pet_friendly) params.pet_friendly = currentFilters.pet_friendly;
 
             const data = await propertyService.getAllProperties(params);

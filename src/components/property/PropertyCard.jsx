@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../common/Badge';
 import { usePaymentStatus } from '../../hooks/usePaymentStatus';
 
@@ -25,9 +25,16 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
         setLiked(!!isWishlisted);
     }, [isWishlisted]);
 
+    const navigate = useNavigate();
+
     const handleHeartClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const userStr = localStorage.getItem('user');
+        const isLoggedIn = userStr && userStr !== 'null' && userStr !== 'undefined';
+        if (!isLoggedIn) {
+            return navigate('/login', { state: { from: window.location.pathname } });
+        }
         setLiked(prev => !prev);
         if (onToggleWishlist) onToggleWishlist(property.id, liked);
     };

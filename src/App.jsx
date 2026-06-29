@@ -54,7 +54,10 @@ const AppContent = () => {
   // a hard page reload which would cause an infinite request loop.
   useEffect(() => {
     const handleAuthExpired = () => {
-      if (window.location.pathname !== '/login') {
+      const publicPaths = ['/', '/listings'];
+      const isPublic = publicPaths.includes(window.location.pathname) ||
+        window.location.pathname.startsWith('/listings/');
+      if (window.location.pathname !== '/login' && !isPublic) {
         navigate('/login', { replace: true });
       }
     };
@@ -77,10 +80,12 @@ const AppContent = () => {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/mfa-verify" element={<MFAVerify />} />
 
-          {/* ── Protected: any logged-in user ────────────────────── */}
-          <Route path="/" element={<ConsumerRoute><Home /></ConsumerRoute>} />
-          <Route path="/listings" element={<ConsumerRoute><BrowseListings /></ConsumerRoute>} />
-          <Route path="/listings/:id" element={<ConsumerRoute><PropertyDetail /></ConsumerRoute>} />
+          {/* ── Public Routes ─────────────────────────────────── */}
+          <Route path="/" element={<Home />} />
+          <Route path="/listings" element={<BrowseListings />} />
+          <Route path="/listings/:id" element={<PropertyDetail />} />
+
+          {/* ── Protected: any logged-in user ─────────────────── */}
           <Route path="/recommendations" element={<ConsumerRoute><RecommendationsPage /></ConsumerRoute>} />
           <Route path="/compare" element={<ConsumerRoute><ComparePage /></ConsumerRoute>} />
           <Route path="/wishlist" element={<ConsumerRoute><WishlistPage /></ConsumerRoute>} />

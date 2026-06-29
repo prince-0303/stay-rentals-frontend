@@ -158,6 +158,7 @@ const PropertyDetailPage = () => {
     };
 
     const handlePayAdvance = async () => {
+        if (!currentUser) return navigate('/login', { state: { from: window.location.pathname } });
         try {
             const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
             if (!razorpayKey) {

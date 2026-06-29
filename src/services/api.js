@@ -13,7 +13,7 @@ const api = axios.create({
 const AUTH_URLS = ['/auth/login/', '/auth/register/', '/auth/token/refresh/', '/auth/google/login/', '/auth/logout/'];
 
 // Background polling URLs — if these 401, silently fail (do NOT log out)
-const BACKGROUND_URLS = ['/notifications/', '/chat/conversations/', '/properties/saved/', '/notifications/register-token/', '/chat/token/'];
+const BACKGROUND_URLS = ['/notifications/', '/chat/conversations/', '/properties/saved/', '/notifications/register-token/', '/chat/token/', '/properties/'];
 
 const isAuthUrl = (url) => AUTH_URLS.some(authUrl => url?.includes(authUrl));
 const isBackgroundUrl = (url) => BACKGROUND_URLS.some(bg => url?.includes(bg));
