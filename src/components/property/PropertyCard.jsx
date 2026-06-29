@@ -77,7 +77,7 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
             className={`group relative rounded-premium overflow-hidden bg-white shadow-card hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 flex flex-col h-full border-2 border-brand-gray-light ${isPaid ? 'opacity-75 pointer-events-none' : ''}`}
         >
             {/* Image Section */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-brand-gray-light">
+            <div className="relative aspect-[16/9] overflow-hidden bg-brand-gray-light">
                 <img
                     src={displaySrc}
                     alt={property.title || 'Property'}
@@ -147,14 +147,14 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
             </div>
 
             {/* Content Section */}
-            <div className="p-6 flex flex-col flex-1">
+            <div className="p-4 flex flex-col flex-1">
                 <div className="mb-5">
-                    <div className="flex justify-between items-start gap-4 mb-2">
+                    <div className="flex justify-between items-start gap-3 mb-2">
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-xl font-extrabold text-brand-gray-dark leading-snug group-hover:text-brand-blue-primary transition-colors line-clamp-2">
+                            <h3 className="text-base font-extrabold text-brand-gray-dark leading-snug group-hover:text-brand-blue-primary transition-colors line-clamp-1">
                                 {property.title}
                             </h3>
-                            <div className="flex items-center gap-1.5 mt-2 opacity-70">
+                            <div className="flex items-center gap-1.5 mt-1 opacity-70">
                                 <svg className="w-3 h-3 text-brand-blue-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
@@ -164,18 +164,15 @@ const PropertyCard = ({ property, isWishlisted, onToggleWishlist }) => {
                             </div>
                         </div>
                         <div className="flex flex-col items-end shrink-0 text-right">
-                            <span className="text-2xl font-black text-brand-blue-primary tracking-tighter leading-none">₹{property.rent_price || property.price || '—'}</span>
-                            <span className="text-[9px] font-bold text-brand-gray-medium uppercase tracking-widest mt-1">/ month</span>
+                            <span className="text-lg font-black text-brand-blue-primary tracking-tighter leading-none">₹{property.rent_price || property.price || '—'}</span>
+                            <span className="text-[9px] font-bold text-brand-gray-medium uppercase tracking-widest mt-0.5">/ month</span>
                         </div>
                     </div>
                 </div>
 
-                <p className="text-sm font-medium text-brand-gray-medium line-clamp-2 mb-6 leading-relaxed">
-                    {property.description || 'A stunning premium property featuring modern architecture and world-class amenities in a prime location.'}
-                </p>
 
                 {/* Amenities Bar */}
-                <div className="mt-auto pt-4 border-t border-brand-gray-light/50 flex items-center justify-between text-brand-gray-dark">
+                <div className="pt-3 border-t border-brand-gray-light/50 flex items-center justify-between text-brand-gray-dark">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1.5">
                             <span className="text-xs font-black">3</span>

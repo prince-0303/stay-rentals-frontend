@@ -37,20 +37,24 @@ const HeroSearchBar = () => {
 
     return (
         <form onSubmit={handleSearch} className="w-full max-w-5xl mx-auto mt-12 mb-8">
-            {/* AI Toggle */}
-            <div className="flex justify-end mb-3">
+            {/* AI Toggle - Modern switch */}
+            <div className="flex justify-end mb-4 items-center gap-3">
+                <span className={`text-xs font-black uppercase tracking-wider transition-colors ${aiMode ? 'text-brand-accent' : 'text-white/50'}`}>
+                    AI Mode
+                </span>
                 <button
                     type="button"
                     onClick={() => setAiMode(m => !m)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 border ${aiMode
-                        ? 'bg-brand-accent text-brand-blue-primary border-brand-accent shadow-lg shadow-brand-accent/30'
-                        : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
-                        }`}
+                    className={`relative w-12 h-6 rounded-full transition-all duration-300 focus:outline-none ${aiMode ? 'bg-brand-accent shadow-lg shadow-brand-accent/40' : 'bg-white/20'}`}
+                    aria-label="Toggle AI Search"
                 >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    AI Search {aiMode ? 'On' : 'Off'}
+                    <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full shadow-md transition-all duration-300 flex items-center justify-center ${aiMode ? 'translate-x-6 bg-brand-blue-primary' : 'translate-x-0 bg-white'}`}>
+                        {aiMode && (
+                            <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        )}
+                    </span>
                 </button>
             </div>
 
@@ -210,7 +214,7 @@ const Home = () => {
         <div className="min-h-screen bg-white text-brand-gray-dark selection:bg-brand-blue-muted/30 font-sans">
             
             {/* 1. Landing Screen & Welcome Note */}
-            <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden animate-fade-in pt-12 mt-0">
+            <section className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden animate-fade-in pt-20 mt-0">
                 {/* Full-width Background Image */}
                 <div className="absolute inset-0 z-0">
                     <img

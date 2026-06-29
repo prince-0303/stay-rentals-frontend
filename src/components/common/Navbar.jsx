@@ -82,7 +82,7 @@ const Navbar = () => {
                 const res = await api.get('/notifications/');
                 setNotifications(res.data.notifications || []);
                 setUnreadNotifCount(res.data.unread_count || 0);
-            } catch (e) {}
+            } catch (e) { }
         };
         fetchNotifications();
         const interval = setInterval(fetchNotifications, 30000);
@@ -106,7 +106,7 @@ const Navbar = () => {
             await api.post('/notifications/mark-read/');
             setUnreadNotifCount(0);
             setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-        } catch (e) {}
+        } catch (e) { }
     };
 
     const dismissNotification = async (id) => {
@@ -114,7 +114,7 @@ const Navbar = () => {
             await api.post('/notifications/mark-read/', { id });
             setNotifications(prev => prev.filter(n => n.id !== id));
             setUnreadNotifCount(prev => Math.max(0, prev - 1));
-        } catch (e) {}
+        } catch (e) { }
     };
 
     useEffect(() => {
@@ -188,7 +188,7 @@ const Navbar = () => {
         <nav className="fixed top-0 left-0 w-full z-[200] transition-all duration-300">
             {/* Background layer decoupled from main container to prevent CSS containment on fixed children */}
             <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-brand-gray-light/50 shadow-glass pointer-events-none -z-10"></div>
-            
+
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="flex items-center justify-between h-24">
                     {/* Logo - Matching 'Ez-Stay' style */}
@@ -269,7 +269,7 @@ const Navbar = () => {
                                                             <p className="text-[10px] text-brand-gray-light mt-1">{new Date(n.created_at).toLocaleString()}</p>
                                                         </div>
                                                         <button onClick={() => dismissNotification(n.id)} className="text-gray-400 hover:text-red-500 transition-colors mt-0.5 flex-shrink-0 opacity-100">
-                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                                         </button>
                                                     </div>
                                                 ))}
@@ -287,7 +287,7 @@ const Navbar = () => {
                                         <div className="w-12 h-12 rounded-full border-2 border-brand-gray-light p-1 transition-all group-hover:border-brand-blue-muted">
                                             <div className="w-full h-full rounded-full bg-brand-blue-primary flex items-center justify-center text-white shadow-md">
                                                 <span className="font-bold text-lg leading-none">
-                                                    {user.first_name ? user.first_name[0].toUpperCase() : 'U'}
+                                                    {user?.first_name?.[0]?.toUpperCase()}
                                                 </span>
                                             </div>
                                         </div>
@@ -308,12 +308,12 @@ const Navbar = () => {
 
                                             <div className="py-2">
                                                 <Link
-                                                    to="/profile"
+                                                    to={isLister ? '/lister/dashboard' : '/dashboard?tab=overview'}
                                                     className="flex items-center gap-3 px-5 py-3 text-sm font-semibold text-brand-gray-dark hover:bg-brand-gray-light transition-colors"
                                                     onClick={() => setIsMenuOpen(false)}
                                                 >
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                                    Profile
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                    Settings
                                                 </Link>
                                                 {isLister && (
                                                     <Link
@@ -372,7 +372,7 @@ const Navbar = () => {
                             <div className="fixed top-0 left-0 w-[280px] sm:w-[320px] h-screen bg-brand-blue-primary text-white shadow-2xl flex flex-col z-[255] 
                                             transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
                                             -translate-x-full peer-checked:translate-x-0 overflow-hidden">
-                                
+
                                 {/* Drawer Header */}
                                 <div className="p-6 pt-8 pb-10 flex items-center">
                                     <span className="text-3xl font-black text-white tracking-tight">
@@ -407,8 +407,8 @@ const Navbar = () => {
                                             <div className="h-px w-full bg-white/10 my-4" />
                                             <input type="checkbox" id="mobile-profile-dropdown" className="peer hidden" />
                                             <label htmlFor="mobile-profile-dropdown" className="w-full cursor-pointer text-lg font-bold transition-all duration-300 flex items-center gap-4 px-5 py-4 rounded-2xl text-white/80 hover:bg-white/10 hover:text-white select-none">
-                                                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                                My Profile
+                                                <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                Settings
                                                 <svg className="w-5 h-5 ml-auto transition-transform duration-300 peer-checked:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" /></svg>
                                             </label>
 
@@ -416,7 +416,7 @@ const Navbar = () => {
                                                 <div className="overflow-hidden">
                                                     <div className="flex flex-col space-y-1 pl-14 pr-4 pb-2">
                                                         <label htmlFor="mobile-menu-toggle" className="w-full cursor-pointer">
-                                                            <Link to={isLister ? "/lister/dashboard" : "/dashboard"} className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Overview</Link>
+                                                            <Link to={isLister ? "/lister/dashboard" : "/dashboard"} className="text-[15px] font-bold block py-3 text-white/70 hover:text-white transition-colors">Profile</Link>
                                                         </label>
                                                         {!isLister && (
                                                             <>

@@ -17,9 +17,9 @@ export const RecentlyViewed = () => {
     return (
         <div className="space-y-8">
             <h3 className="text-xl font-black">Browse History</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {recent.length === 0 ? (
-                    <div className="bg-brand-offwhite border-2 border-dashed border-brand-gray-light rounded-[32px] p-12 flex flex-col items-center justify-center text-center opacity-60 col-span-1 md:col-span-2">
+                    <div className="bg-brand-offwhite border-2 border-dashed border-brand-gray-light rounded-[32px] p-12 flex flex-col items-center justify-center text-center opacity-60 col-span-full">
                         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-brand-gray-light mb-4 shadow-sm">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
@@ -136,12 +136,12 @@ export const AccountActions = () => {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white border border-brand-gray-light p-10 rounded-[40px] shadow-sm flex flex-col justify-between">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white border border-brand-gray-light p-4 sm:p-5 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
-                    <Badge variant="neutral" className="bg-brand-gray-light/30 text-brand-gray-dark font-black tracking-widest mb-6 uppercase">Control Center</Badge>
-                    <h3 className="text-2xl font-black text-brand-gray-dark mb-4">Deactivate Account</h3>
-                    <p className="text-brand-gray-medium font-medium leading-relaxed mb-10">
+                    <Badge variant="neutral" className="bg-brand-gray-light/30 text-brand-gray-dark font-black tracking-widest mb-3 uppercase text-[10px]">Control Center</Badge>
+                    <h3 className="text-lg font-black text-brand-gray-dark mb-2">Deactivate Account</h3>
+                    <p className="text-xs text-brand-gray-medium font-medium leading-relaxed mb-4">
                         Pause your activities on our platform. Your profile and active listings will be archived until you decide to return.
                     </p>
                 </div>
@@ -150,12 +150,12 @@ export const AccountActions = () => {
                 </Button>
             </div>
 
-            <div className="bg-red-50 border border-red-100 p-10 rounded-[40px] flex flex-col justify-between relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-red-100/50 rounded-bl-full -mr-16 -mt-16 transition-transform duration-700 group-hover:scale-110" />
+            <div className="bg-red-50 border border-red-100 p-4 sm:p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-red-100/50 rounded-bl-full -mr-8 -mt-8 transition-transform duration-700 group-hover:scale-110" />
                 <div className="relative z-10">
-                    <Badge variant="danger" className="bg-red-500 text-white font-black tracking-widest mb-6 uppercase border-none">Danger Zone</Badge>
-                    <h3 className="text-2xl font-black text-red-700 mb-4">Permanent Removal</h3>
-                    <p className="text-red-900/60 font-medium leading-relaxed mb-10">
+                    <Badge variant="danger" className="bg-red-500 text-white font-black tracking-widest mb-3 uppercase border-none text-[10px]">Danger Zone</Badge>
+                    <h3 className="text-lg font-black text-red-700 mb-2">Permanent Removal</h3>
+                    <p className="text-xs text-red-900/60 font-medium leading-relaxed mb-4">
                         Once initialized, all your personal data, saved collections, and listing history will be permanently wiped from our secure servers.
                     </p>
                 </div>
@@ -176,10 +176,10 @@ export const NotificationSettings = () => {
     };
 
     return (
-        <div className="bg-white border border-brand-gray-light p-10 rounded-[40px] shadow-sm">
-            <Badge variant="neutral" className="bg-brand-gray-light/30 text-brand-gray-dark font-black tracking-widest mb-6 uppercase">Notifications</Badge>
-            <h3 className="text-2xl font-black text-brand-gray-dark mb-4">Push Notifications</h3>
-            <p className="text-brand-gray-medium font-medium leading-relaxed mb-8">
+        <div className="bg-white border border-brand-gray-light p-4 sm:p-5 rounded-2xl shadow-sm">
+            <Badge variant="neutral" className="bg-brand-gray-light/30 text-brand-gray-dark font-black tracking-widest mb-3 uppercase text-[10px]">Notifications</Badge>
+            <h3 className="text-lg font-black text-brand-gray-dark mb-2">Push Notifications</h3>
+            <p className="text-xs text-brand-gray-medium font-medium leading-relaxed mb-4">
                 Get notified about new messages, visit updates, and important account activity.
             </p>
             {status === 'granted' ? (

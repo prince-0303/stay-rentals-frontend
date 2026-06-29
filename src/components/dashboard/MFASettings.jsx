@@ -119,78 +119,78 @@ const MFASettings = () => {
 
             {!status.mfa_enabled ? (
                 setupStep === 'initial' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div
                             onClick={() => startSetup('app')}
-                            className="bg-white border border-brand-gray-light p-10 rounded-[40px] cursor-pointer hover:border-brand-blue-primary hover:shadow-2xl transition-all group"
+                            className="bg-white border border-brand-gray-light p-4 sm:p-5 rounded-2xl cursor-pointer hover:border-brand-blue-primary hover:shadow-2xl transition-all group"
                         >
-                            <div className="w-16 h-16 bg-brand-offwhite rounded-3xl flex items-center justify-center text-brand-blue-primary mb-8 group-hover:bg-brand-blue-primary group-hover:text-white transition-all">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                            <div className="w-10 h-10 bg-brand-offwhite rounded-xl flex items-center justify-center text-brand-blue-primary mb-4 group-hover:bg-brand-blue-primary group-hover:text-white transition-all">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                             </div>
-                            <h4 className="text-xl font-black mb-4">Authenticator App</h4>
-                            <p className="text-brand-gray-medium font-medium leading-relaxed">Use industry-standard apps like Google Authenticator or Authy for maximum protection.</p>
+                            <h4 className="text-base font-black mb-2">Authenticator App</h4>
+                            <p className="text-xs text-brand-gray-medium font-medium leading-relaxed">Use industry-standard apps like Google Authenticator or Authy for maximum protection.</p>
                         </div>
                     </div>
                 ) : setupStep === 'verify' ? (
-                    <div className="bg-white border border-brand-gray-light rounded-[40px] p-12 flex flex-col items-center">
-                        <Badge variant="accent" className="bg-brand-accent text-brand-blue-primary font-black mb-10 tracking-widest">STEP 02: VERIFICATION</Badge>
+                    <div className="bg-white border border-brand-gray-light rounded-2xl p-4 sm:p-6 flex flex-col items-center">
+                        <Badge variant="accent" className="bg-brand-accent text-brand-blue-primary font-black mb-6 tracking-widest text-[10px]">STEP 02: VERIFICATION</Badge>
                         {qrData?.qr_code && (
-                            <div className="relative group mb-10">
-                                <div className="absolute inset-0 bg-brand-blue-primary/10 blur-3xl rounded-full scale-75 group-hover:scale-100 transition-transform duration-700" />
-                                <img src={qrData.qr_code} alt="QR" className="relative z-10 w-48 h-48 p-4 bg-white border-8 border-brand-offwhite rounded-[32px] shadow-xl" />
+                            <div className="relative group mb-6">
+                                <div className="absolute inset-0 bg-brand-blue-primary/10 blur-2xl rounded-full scale-75 group-hover:scale-100 transition-transform duration-700" />
+                                <img src={qrData.qr_code} alt="QR" className="relative z-10 w-32 h-32 p-2 bg-white border-[6px] border-brand-offwhite rounded-2xl shadow-xl" />
                             </div>
                         )}
-                        <form onSubmit={verifyAndEnable} className="w-full max-w-[384px] space-y-8">
+                        <form onSubmit={verifyAndEnable} className="w-full max-w-[280px] space-y-4">
                             <Input
                                 label="ENTER 6-DIGIT CODE"
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
                                 placeholder="· · · · · ·"
                                 maxLength={6}
-                                className="text-center text-2xl font-black tracking-[0.5em] h-20"
+                                className="text-center text-lg font-black tracking-[0.4em] h-14"
                             />
-                            <div className="flex gap-4">
-                                <Button variant="outline" className="flex-1" onClick={() => setSetupStep('initial')}>Cancel</Button>
-                                <Button variant="primary" className="flex-1 py-4" type="submit" isLoading={loading} disabled={verificationCode.length !== 6}>Activate</Button>
+                            <div className="flex gap-3">
+                                <Button variant="outline" className="flex-1 py-2 text-sm" onClick={() => setSetupStep('initial')}>Cancel</Button>
+                                <Button variant="primary" className="flex-1 py-2 text-sm" type="submit" isLoading={loading} disabled={verificationCode.length !== 6}>Activate</Button>
                             </div>
                         </form>
                     </div>
                 ) : (
-                    <div className="bg-brand-blue-primary rounded-[40px] p-12 text-white shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
-                        <h4 className="text-2xl font-black mb-6">Vault Access Codes</h4>
-                        <p className="text-brand-blue-muted font-bold mb-10 max-w-[448px] italic">"Keep these codes in a secure, offline location. They are your only lifeline if you lose your primary device."</p>
-                        <div className="grid grid-cols-2 gap-4 mb-10">
+                    <div className="bg-brand-blue-primary rounded-2xl p-4 sm:p-6 text-white shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-2xl -mr-24 -mt-24 pointer-events-none" />
+                        <h4 className="text-lg font-black mb-3">Vault Access Codes</h4>
+                        <p className="text-xs text-brand-blue-muted font-bold mb-6 max-w-[400px] italic">"Keep these codes in a secure, offline location. They are your only lifeline if you lose your primary device."</p>
+                        <div className="grid grid-cols-2 gap-3 mb-6">
                             {backupCodes.map((code, idx) => (
-                                <div key={idx} className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-xl font-black text-center tracking-widest hover:bg-white/20 transition-all select-all">
+                                <div key={idx} className="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-lg font-black text-center tracking-widest text-sm hover:bg-white/20 transition-all select-all">
                                     {code}
                                 </div>
                             ))}
                         </div>
-                        <div className="flex gap-4">
-                            <Button variant="accent" onClick={downloadBackupCodes} className="shadow-2xl">Secure Download</Button>
-                            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10" onClick={() => { setSetupStep('initial'); fetchStatus(); }}>Done</Button>
+                        <div className="flex gap-3">
+                            <Button variant="accent" onClick={downloadBackupCodes} className="shadow-xl py-2 text-sm">Secure Download</Button>
+                            <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 py-2 text-sm" onClick={() => { setSetupStep('initial'); fetchStatus(); }}>Done</Button>
                         </div>
                     </div>
                 )
             ) : (
-                <div className="space-y-12">
-                    <div className="bg-brand-offwhite border border-brand-gray-light p-10 rounded-[40px] flex items-center justify-between">
-                        <div className="flex gap-6 items-center">
-                            <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-100">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                <div className="space-y-6">
+                    <div className="bg-brand-offwhite border border-brand-gray-light p-4 sm:p-5 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <div className="flex gap-4 items-center w-full md:w-auto">
+                            <div className="w-10 h-10 shrink-0 bg-green-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-green-100">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
                             </div>
                             <div>
-                                <h4 className="text-xl font-black text-brand-gray-dark">Safeguard Active</h4>
-                                <p className="text-xs font-bold text-brand-gray-medium uppercase tracking-widest mt-1">Primary method: TOTP Application</p>
+                                <h4 className="text-base font-black text-brand-gray-dark">Safeguard Active</h4>
+                                <p className="text-[10px] font-bold text-brand-gray-medium uppercase tracking-widest mt-0.5">Primary method: TOTP Application</p>
                             </div>
                         </div>
-                        <Button variant="outline" className="border-brand-gray-light" onClick={() => setBackupCodes([])}>Managed</Button>
+                        <Button variant="outline" className="border-brand-gray-light w-full md:w-auto py-2 text-sm" onClick={() => setBackupCodes([])}>Managed</Button>
                     </div>
 
-                    <div className="pt-12 border-t border-brand-gray-light">
-                        <h4 className="text-xl font-black text-red-600 mb-8 uppercase tracking-widest text-xs">Danger Zone</h4>
-                        <form onSubmit={disableMFA} className="max-w-[448px] space-y-6">
+                    <div className="pt-6 border-t border-brand-gray-light">
+                        <h4 className="text-sm font-black text-red-600 mb-4 uppercase tracking-widest text-[10px]">Danger Zone</h4>
+                        <form onSubmit={disableMFA} className="max-w-[400px] space-y-4">
                             <Input
                                 label="DEACTIVATE SECURITY"
                                 type="password"
@@ -198,7 +198,7 @@ const MFASettings = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                            <Button variant="outline" className="border-red-100 text-red-600 hover:bg-red-50 px-10" type="submit" isLoading={loading}>Disable MFA</Button>
+                            <Button variant="outline" className="border-red-100 text-red-600 hover:bg-red-50 px-8 py-2 text-sm" type="submit" isLoading={loading}>Disable MFA</Button>
                         </form>
                     </div>
                 </div>

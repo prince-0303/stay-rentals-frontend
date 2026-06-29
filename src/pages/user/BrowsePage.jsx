@@ -349,13 +349,6 @@ const BrowsePage = () => {
                                 </div>
                             </div>
 
-                            {/* Nearby Ad/Card */}
-                            <div className="bg-brand-blue-primary rounded-premium p-8 text-white relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-700" />
-                                <h4 className="text-lg font-black leading-tight mb-4 relative z-10">Premium Lister?</h4>
-                                <p className="text-xs font-semibold text-brand-blue-muted mb-6 relative z-10">Get 5x more visibility for your flat with Ez-Stay Prime.</p>
-                                <Button variant="accent" className="py-2.5 px-6 text-[10px] font-black tracking-widest shadow-xl">LEARN MORE</Button>
-                            </div>
                         </aside>
                     )}
 
