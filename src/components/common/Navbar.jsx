@@ -139,6 +139,18 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
+        const handleAuthChange = () => {
+            try {
+                setUser(JSON.parse(localStorage.getItem('user')));
+            } catch {
+                setUser(null);
+            }
+        };
+        window.addEventListener('auth-change', handleAuthChange);
+        return () => window.removeEventListener('auth-change', handleAuthChange);
+    }, []);
+
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsMenuOpen(false);
@@ -193,7 +205,7 @@ const Navbar = () => {
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="flex items-center justify-between h-24">
                     {/* Logo - Matching 'Ez-Stay' style */}
-                    <Link to="/" className="flex items-center group">
+                    <Link to={isLister ? "/lister/dashboard" : "/"} className="flex items-center group">
                         <span className="text-3xl font-black text-brand-blue-primary tracking-tight transition-transform group-hover:scale-105">
                             Ez-Stay<span className="text-brand-accent ml-0.5">•</span>
                         </span>
@@ -288,7 +300,7 @@ const Navbar = () => {
                                         <div className="w-12 h-12 rounded-full border-2 border-brand-gray-light p-1 transition-all group-hover:border-brand-blue-muted">
                                             <div className="w-full h-full rounded-full bg-brand-blue-primary flex items-center justify-center text-white shadow-md">
                                                 <span className="font-bold text-lg leading-none">
-                                                    {user?.first_name?.[0]?.toUpperCase()}
+                                                    {(user?.first_name?.[0] || user?.email?.[0] || 'U').toUpperCase()}
                                                 </span>
                                             </div>
                                         </div>

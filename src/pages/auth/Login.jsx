@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import AuthLayout from '../../components/common/AuthLayout';
 import Input from '../../components/common/Input';
@@ -8,6 +8,7 @@ import { login, googleAuth } from '../../services/authService';
 
 const Login = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +42,13 @@ const Login = () => {
                 return;
             }
 
-            navigate('/');
+            const userData = response.user || response.data?.user;
+            if (userData?.role === 'lister') {
+                navigate('/lister/dashboard');
+            } else {
+                const from = location.state?.from || '/';
+                navigate(from);
+            }
 
         } catch (err) {
             if (err.requires_kyc) {
@@ -70,9 +77,16 @@ const Login = () => {
             try {
                 setIsLoading(true);
                 setError('');
-                await googleAuth(codeResponse.code);
+                const resData = await googleAuth(codeResponse.code);
+                const userData = resData.user || resData.data?.user;
                 await new Promise(resolve => setTimeout(resolve, 150));
-                navigate('/');
+                
+                if (userData?.role === 'lister') {
+                    navigate('/lister/dashboard');
+                } else {
+                    const from = location.state?.from || '/';
+                    navigate(from);
+                }
             } catch (err) {
                 console.error('Google Auth Error:', err);
                 setError('Google authentication failed');

@@ -44,13 +44,10 @@ const ListerDashboard = () => {
                 const totalProps = fetchedProps.length;
                 const healthString = totalProps > 0 ? `${activeCount}/${totalProps} Active` : '0 Active';
 
-                // A simulated "Weekly Reach" or similar fallback metric
-                const reach = totalLeads * 14 + activeCount * 45;
-
                 setStats([
-                    { label: 'Total Leads', value: String(totalLeads), change: '+New', color: 'from-brand-blue-primary to-brand-blue-dark' },
-                    { label: 'Listing Health', value: healthString, change: 'Steady', color: 'from-brand-accent to-yellow-600' },
-                    { label: 'Weekly Reach', value: `${reach}`, change: '+Engaged', color: 'from-brand-gray-dark to-brand-gray-light' }
+                    { label: 'Total Leads', value: String(totalLeads), change: 'Total', color: 'from-brand-blue-primary to-brand-blue-dark' },
+                    { label: 'Listing Health', value: healthString, change: 'Live', color: 'from-brand-accent to-yellow-600' },
+                    { label: 'Total Properties', value: String(totalProps), change: 'Total', color: 'from-brand-gray-dark to-brand-gray-light' }
                 ]);
 
             } catch (error) {
@@ -101,7 +98,7 @@ const ListerDashboard = () => {
                             Welcome Back, {user?.first_name || 'Partner'}
                         </h1>
                         <p className="text-brand-gray-medium font-medium max-w-2xl">
-                            Monitor your premium listings, track incoming leads, and optimize your portfolio performance.
+                            Monitor your premium listings, track incoming leads, and manage your properties.
                         </p>
                     </div>
                     <div className="flex gap-4">
@@ -155,7 +152,7 @@ const ListerDashboard = () => {
                                                             {req.property_title || req.property?.title || 'Property Inquiry'}
                                                         </p>
                                                         <p className="text-[10px] font-bold text-brand-gray-medium uppercase tracking-widest mt-1">
-                                                            {req.tenant_name || req.user?.first_name || 'Prospective Tenant'}
+                                                            {req.user_name || req.tenant_name || req.user?.first_name || 'Guest User'}
                                                         </p>
                                                     </div>
                                                     <Badge variant={req.status === 'Pending' ? 'accent' : 'neutral'} className="text-[8px] py-1 px-2 border-none bg-white shadow-sm">
