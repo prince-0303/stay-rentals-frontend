@@ -18,6 +18,7 @@ const PropertyDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeImg, setActiveImg] = useState(0);
+    const [isSliderOpen, setIsSliderOpen] = useState(false);
 
     const [isSaved, setIsSaved] = useState(false);
     const [compareList, setCompareList] = useState([]);
@@ -315,28 +316,95 @@ const PropertyDetailPage = () => {
                 {/* Gallery Section */}
                 <div className={`grid grid-cols-1 ${displayImages.length > 1 ? 'lg:grid-cols-4' : 'lg:grid-cols-1'} gap-4 mb-16 h-auto sm:h-[400px] lg:h-[500px]`}>
                     <div className={`${displayImages.length > 1 ? 'lg:col-span-3' : 'lg:col-span-1'} h-full rounded-premium overflow-hidden bg-brand-gray-light relative group`}>
-                        <img
-                            src={displayImages[activeImg]}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            alt="Main Prop"
-                        />
-                        <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/50 to-transparent pointer-events-none">
-                            <Badge variant="primary" className="bg-brand-blue-primary/80 backdrop-blur-md border-white/20">PREMIUM LISTING</Badge>
+                        <div className="w-full h-full cursor-pointer relative overflow-hidden bg-black/5" onClick={() => setIsSliderOpen(true)}>
+                            {/* Blurred background to fill empty space for different sized images */}
+                            <div 
+                                className="absolute inset-0 bg-cover bg-center blur-xl scale-110 opacity-50 transition-all duration-700" 
+                                style={{ backgroundImage: `url(${displayImages[activeImg]})` }} 
+                            />
+                            {/* Main image contained properly */}
+                            <img
+                                src={displayImages[activeImg]}
+                                className="w-full h-full object-contain relative z-10 transition-transform duration-700 group-hover:scale-105 drop-shadow-2xl"
+                                alt="Main Prop"
+                            />
                         </div>
-                    </div>
-                    <div className="hidden lg:flex flex-col gap-4 h-full">
-                        {displayImages.slice(1, 4).map((img, i) => (
-                            <button key={i} onClick={() => setActiveImg(i + 1)} className="flex-1 rounded-premium overflow-hidden bg-brand-gray-light border-2 border-transparent hover:border-brand-blue-primary transition-all">
-                                <img src={img} className="w-full h-full object-cover" alt="Sub Prop" />
-                            </button>
-                        ))}
-                        {displayImages.length > 4 && (
-                            <button className="flex-1 bg-brand-blue-primary text-white rounded-premium font-black text-sm flex items-center justify-center hover:bg-brand-blue-dark transition-colors">
-                                + {displayImages.length - 4} MORE
-                            </button>
+                        {displayImages.length > 1 && (
+                            <>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); setActiveImg(prev => prev > 0 ? prev - 1 : displayImages.length - 1); }}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-gray-dark p-3 rounded-full shadow-lg opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all z-10 focus:outline-none"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); setActiveImg(prev => prev < displayImages.length - 1 ? prev + 1 : 0); }}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-gray-dark p-3 rounded-full shadow-lg opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all z-10 focus:outline-none"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" /></svg>
+                                </button>
+                            </>
                         )}
                     </div>
+                    {displayImages.length > 1 && (
+                        <div className="hidden lg:flex flex-col gap-4 h-full min-h-0">
+                            {displayImages.slice(1, 3).map((img, i) => (
+                                <button key={i} onClick={() => { setActiveImg(i + 1); setIsSliderOpen(true); }} className="flex-1 min-h-0 rounded-premium overflow-hidden bg-brand-gray-light border-2 border-transparent hover:border-brand-blue-primary transition-all relative group">
+                                    <img src={img} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" alt="Sub Prop" />
+                                </button>
+                            ))}
+                            {displayImages.length > 3 && (
+                                <button onClick={() => { setActiveImg(3); setIsSliderOpen(true); }} className="flex-1 min-h-0 rounded-premium overflow-hidden bg-brand-gray-light border-2 border-transparent hover:border-brand-blue-primary transition-all relative group">
+                                    <img src={displayImages[3]} className="w-full h-full object-cover group-hover:opacity-90 transition-opacity" alt="Sub Prop" />
+                                    {displayImages.length > 4 && (
+                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white hover:bg-black/40 transition-colors backdrop-blur-[2px]">
+                                            <span className="font-black text-lg tracking-widest">+ {displayImages.length - 4} MORE</span>
+                                        </div>
+                                    )}
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
+
+                {/* Fullscreen Slider Overlay */}
+                {isSliderOpen && (
+                    <div 
+                        className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center cursor-zoom-out"
+                        onClick={() => setIsSliderOpen(false)}
+                    >
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); setIsSliderOpen(false); }} 
+                            className="absolute top-6 right-6 text-white/70 hover:text-white p-2 z-50"
+                        >
+                            <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                        
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev > 0 ? prev - 1 : displayImages.length - 1)); }} 
+                            className="absolute left-6 text-white/50 hover:text-white p-4 transition-colors z-50 cursor-pointer"
+                        >
+                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                        
+                        <div 
+                            className="w-full max-w-5xl max-h-[85vh] px-16 flex flex-col items-center cursor-default"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img src={displayImages[activeImg]} className="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl" alt="Gallery View" />
+                            <div className="mt-6 text-white/70 font-bold tracking-widest text-sm uppercase">
+                                {activeImg + 1} / {displayImages.length}
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); setActiveImg((prev) => (prev < displayImages.length - 1 ? prev + 1 : 0)); }} 
+                            className="absolute right-6 text-white/50 hover:text-white p-4 transition-colors z-50 cursor-pointer"
+                        >
+                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </div>
+                )}
 
                 {/* Grid Layout for Content & Booking */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
@@ -351,22 +419,18 @@ const PropertyDetailPage = () => {
                                 {property.description || "No description available for this property."}
                             </p>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 py-8 border-y border-brand-gray-light">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 py-8 border-y border-brand-gray-light">
                                 <div className="text-center">
                                     <p className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase mb-2">Bedrooms</p>
-                                    <p className="text-xl font-black text-brand-gray-dark">{property.bedrooms ?? 'N/A'}</p>
+                                    <p className="text-xl font-black text-brand-gray-dark">{property.bedrooms ?? property.total_rooms ?? 'N/A'}</p>
                                 </div>
                                 <div className="text-center">
                                     <p className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase mb-2">Bathrooms</p>
                                     <p className="text-xl font-black text-brand-gray-dark">{property.bathrooms ?? 'N/A'}</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase mb-2">Area</p>
-                                    <p className="text-xl font-black text-brand-gray-dark">{property.area_sqft ? `${property.area_sqft} ft²` : 'N/A'}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase mb-2">Floor</p>
-                                    <p className="text-xl font-black text-brand-gray-dark">{property.floor_number ?? property.floor ?? 'N/A'}</p>
+                                    <p className="text-[10px] font-black tracking-widest text-brand-gray-medium uppercase mb-2">Kitchens</p>
+                                    <p className="text-xl font-black text-brand-gray-dark">{property.kitchens ?? 'N/A'}</p>
                                 </div>
                             </div>
 
