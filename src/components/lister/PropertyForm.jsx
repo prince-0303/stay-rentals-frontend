@@ -235,7 +235,7 @@ const PropertyForm = ({ initialData = null, onSubmit, loading, onCancel }) => {
                         <label className="block text-[10px] font-black uppercase tracking-widest text-brand-gray-medium mb-3 pl-2">
                             Pin Exact Location <span className="text-brand-gray-light text-[9px] lowercase opacity-80 font-semibold">(Click on map to place pin)</span>
                         </label>
-                        <div className="h-[350px] rounded-3xl overflow-hidden border border-brand-gray-light shadow-sm">
+                        <div className="aspect-square md:aspect-auto md:h-[500px] rounded-3xl overflow-hidden border border-brand-gray-light shadow-sm relative z-0">
                             <MapContainer
                                 center={formData.latitude && formData.longitude ? [Number(formData.latitude), Number(formData.longitude)] : [10.0, 76.3]}
                                 zoom={13}
